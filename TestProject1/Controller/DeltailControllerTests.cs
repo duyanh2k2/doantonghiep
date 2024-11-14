@@ -137,7 +137,7 @@ namespace TestProject1.Controller
 
             List<TblComment> mockComments = new List<TblComment>
 {
-    new TblComment { IdRoomPost = 1, NoiDung = "Bình luận 1" },
+    new TblComment { IdRoomPost = 2, NoiDung = "Bình luận 1" },
     new TblComment { IdRoomPost = 1, NoiDung = "Bình luận 2" }
 };
 
