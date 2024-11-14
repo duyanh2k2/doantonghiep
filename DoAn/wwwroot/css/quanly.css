@@ -1,0 +1,97 @@
+﻿.breadcrumb {
+    background-color: #f1f1f1; /* Màu nền của Breadcrumb */
+    padding: 10px 15px; /* Khoảng cách bên trong */
+    border-radius: 8px; /* Bo tròn góc cho đẹp */
+    margin-bottom: 20px; /* Tạo khoảng cách với phần dưới */
+    border-bottom: 2px solid #ddd; /* Đường kẻ phân cách bên dưới */
+}
+#map {
+    height: 250px;
+    width: 100%;
+    border: 0; /* Bỏ viền cho iframe */
+}
+
+/* Đặt chiều cao cho phần giữa để luôn có không gian cho bản đồ */
+.middle-section {
+    height: 100%;
+}
+
+/* Định dạng thanh menu quản lý */
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh; /* Chiều cao 100% chiều cao cửa sổ */
+    overflow-y: auto; /* Cuộn dọc nếu nội dung dài */
+    background-color: #f8f9fa; /* Màu nền xám nhạt cho thanh menu */
+    color: #343a40; /* Màu chữ tối */
+    padding: 20px; /* Thêm padding cho thanh menu */
+    border-right: 1px solid #dee2e6; /* Thêm viền phải */
+}
+
+.sidebar h5 {
+ /*   margin-bottom: 8px;*/
+    font-size: 1.5rem; /* Kích thước chữ lớn hơn cho tiêu đề */
+}
+
+.list-group-item {
+    background-color: transparent; /* Bỏ màu nền mặc định cho các mục */
+    border: none; /* Bỏ viền mặc định cho các mục */
+    padding: 10px 15px; /* Thêm padding cho các mục */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền */
+}
+
+.list-group-item:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* Hiệu ứng hover */
+    cursor: pointer; /* Con trỏ chuột khi hover */
+}
+
+/* Ẩn thanh quản lý trên màn hình nhỏ */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+}
+
+/* Định dạng ảnh đại diện */
+.avatar {
+    width: 50px; /* Thay đổi kích thước ảnh đại diện */
+    height: 50px; /* Thay đổi kích thước ảnh đại diện */
+    border-radius: 50%; /* Biến ảnh thành hình tròn */
+    margin-right: 15px; /* Khoảng cách bên phải ảnh đại diện */
+}
+
+/* Định dạng dòng chứa ảnh đại diện và tên */
+.avatar-container {
+    display: flex; /* Sử dụng Flexbox để sắp xếp các phần tử */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin-bottom: 20px; /* Khoảng cách dưới */
+}
+.remove-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 2px 5px;
+    margin-left:45px;
+}
+#success-alert {
+    position: fixed;
+    top: 20px;
+    right: -300px; /* Bắt đầu từ ngoài màn hình bên phải */
+    z-index: 1050;
+    width: 250px; /* Độ rộng cố định */
+    transition: right 0.5s ease-in-out; /* Thời gian và hiệu ứng chuyển động */
+    display: block;
+}
+
+#success-alert.show {
+    right: 20px; /* Kết thúc tại góc phải màn hình */
+}
+.list-group-item a {
+    color: inherit; /* Giữ nguyên màu của các phần tử con */
+    text-decoration: none; /* Bỏ gạch chân cho các liên kết */
+}
+.select {
+    background-color: rgba(0, 0, 0, 0.1);
+}

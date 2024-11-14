@@ -1,0 +1,110 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model DoAn.ViewModel.FarvoriteRoom;
+<link href="~/css/room.css" rel="stylesheet" />
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            // Xử lý sự kiện khi nhấn nút "Xóa khỏi yêu thích"
+            $('.btn-remove').click(function () {
+                // Lấy phần tử phòng trọ hiện tại
+                var roomCard = $(this).closest('.room-item');
+                var id = $(this).data('id');
+                // Xóa phòng trọ khỏi danh sách yêu thích (thực hiện thêm xóa bằng Ajax nếu cần)
+                roomCard.fadeOut(300, function () {
+                    $(this).remove();
+                    window.location.href = "/Room/DeleteFarvorite?id="+id;
+                });
+
+                // Có thể gọi API ở đây nếu cần xóa trên server
+                /*
+                $.ajax({
+                    url: '/favorite/remove',
+                    method: 'POST',
+                    data: { roomId: roomId },
+                    success: function(response) {
+                        console.log('Phòng đã được xóa khỏi yêu thích.');
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+                    }
+                });
+                */
+            });
+        });
+        $(document).ready(function () {
+            $('.alert').addClass('show');
+            setTimeout(function () {
+                var alertElement = $('.alert');
+                if (alertElement.length) {
+                    alertElement.alert('close');
+                }
+            }, 3000);
+        });
+    </script>
+}
+<div class="container mt-2 position-relative">
+    @if (TempData["success"] != null)
+    {
+        <div id="success-alert" class="alert alert-primary alert-dismissible fade" role="alert">
+            @TempData["success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else if (TempData["error"] != null)
+    {
+        <div id="success-alert" class="alert alert-danger alert-dismissible fade" role="alert">
+            @TempData["error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Phòng trọ yêu thích</li>
+        </ol>
+    </nav>
+    <h2 class="main-title">Danh sách phòng trọ yêu thích</h2>
+    <div class="row" id="favoriteRooms">
+        <!-- Bắt đầu danh sách các phòng trọ yêu thích -->
+        @if (Model.FavoritePost != null && Model.FavoritePost.Count > 0)
+        {
+            @foreach (var item in Model.FavoritePost)
+            {
+                <div class="col-md-4 mb-4 room-item">
+                    <div class="card favorite-room-card">
+                        @foreach (var img in Model.images)
+                        {
+                            if (item.IdRoomPost == img.IdRoomPost)
+                            {
+                                <a asp-action="Index" asp-controller="Deltail" asp-route-id="@item.IdRoomPost">
+                                    <img src="@img.HinhAnh" class="card-img-top" alt="Phòng Trọ A">
+                                </a>
+                                break;
+                            }
+                        }
+                        <div class="card-body">
+                            <a asp-action="Index" asp-controller="Deltail" asp-route-id="@item.IdRoomPost">
+                                <h5 class="card-title">@item.IdRoomPostNavigation.TieuDe</h5>
+                                <p class="price">@item.IdRoomPostNavigation.GiaTien VND/tháng</p>
+                                <p class="card-text">
+                                    Địa chỉ: @item.IdRoomPostNavigation.DiaChi<br>
+                                    Diện tích: @item.IdRoomPostNavigation.DienTich<br>
+                                    @item.IdRoomPostNavigation.MoTa
+                                </p>
+                            </a>
+                            <button class="btn btn-remove w-100" data-id="@item.IdFavoritePost">Xóa khỏi yêu thích</button>
+                        </div>
+                    </div>
+                </div>
+            } 
+        }
+        else
+        {
+            <h3 class="no-posts-message">Bạn chưa có bài đăng yêu thích nào.</h3>
+        }
+    </div>
+</div>

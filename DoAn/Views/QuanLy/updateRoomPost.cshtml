@@ -1,0 +1,437 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model DoAn.ViewModel.updatePost;
+<link href="~/css/quanly.css" rel="stylesheet" />
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            countImg();
+            var url = window.location.href;
+
+            // Tạo một đối tượng URL để dễ dàng truy cập các tham số
+            var urlParams = new URLSearchParams(window.location.search);
+
+            // Lấy giá trị của tham số 'id'
+            var id = urlParams.get('id');
+            $('#idRoomPost').val(id);
+            // Hiển thị giá trị của id
+           
+            $('#images').on('change', function (event) {
+                //const files = Array.from(event.target.files);
+                //const imagePreview = $('#imagePreview');
+                //const validImageTypes = ['image/jpeg', 'image/png', 'image/gif']; // Các định dạng ảnh hợp lệ
+
+                //files.forEach((file, index) => {
+                //    // Kiểm tra định dạng ảnh
+                //    if (!validImageTypes.includes(file.type)) {
+                //        alert("File không đúng định dạng ảnh. Chỉ chấp nhận các định dạng: JPG, PNG, GIF.");
+                //        return;
+                //    }
+
+                //    images.push(file); // Thêm file vào mảng images nếu hợp lệ
+
+                //    const reader = new FileReader();
+                //    reader.onload = function (e) {
+                //        const imageUrl = e.target.result;
+                //        const imageHtml = `<div class="col-3 mb-2">
+                //                                    <img src="${imageUrl}" class="img-fluid img-thumbnail" alt="Hình ảnh">
+                //                                    <button type="button" class="remove-btn" data-index="${index}">Xóa</button>
+                //                                   </div>`;
+                //        imagePreview.append(imageHtml);
+                //    };
+                //    reader.readAsDataURL(file);
+                //});
+                const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                const files = event.target.files;
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const fileType = file.type;
+
+                    // Kiểm tra xem định dạng có hợp lệ không
+                    if (!validImageTypes.includes(fileType)) {
+                        alert("Vui lòng chọn đúng định dạng ảnh");
+                        $('#images').val(''); // Reset input nếu gặp lỗi
+                        return; // Dừng nếu gặp tệp không hợp lệ
+                    }
+                    const formData = new FormData();
+                    formData.append("image", file);
+                    formData.append("id", id);
+                    // Gửi ảnh hợp lệ qua AJAX
+                    $.ajax({
+                        url: '/QuanLy/UploadSingleImage',
+                        type: 'post',
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            if (response.success) {
+                                const imageUrl = response.imagePath;
+                                const imageHtml = `<div class="col-3 mb-2" data-i="` + response.idImage + `">
+                                                         <img src="${imageUrl}" class="img-fluid img-thumbnail" alt="Hình ảnh">
+                                                         <button type="button" class="remove-btn" data-i="` + response.idImage + `">Xóa</button>
+                                                       </div>`;
+                                $('#imagePreview').append(imageHtml);
+                            } else {
+                                alert(response.message);
+                            }
+                        },
+                        error: function () {
+                            alert("Error uploading image.");
+                        }
+                    });
+                }
+
+                // Reset lại input để có thể chọn thêm file khác cùng tên
+                //$('#images').val('');
+            });
+
+            $('#imagePreview').on('click', '.remove-btn', function () {
+                const i = $(this).data('i');
+                if(confirm("Bạn có chắc chắn muốn xóa ảnh này không?")) {
+                    // Gửi yêu cầu xóa ảnh qua AJAX
+                    $.ajax({
+                        url: '/QuanLy/DeleteImage', // Đường dẫn tới phương thức controller xóa ảnh
+                        type: 'POST',
+                        data: { id:i  }, // Gửi đường dẫn ảnh
+                        success: function (response) {
+                            if (response.success) {
+                                // Xóa phần tử HTML tương ứng
+                                $(`div[data-i="${i}"]`).remove();
+                            } else {
+                                alert(response.message); // Hiển thị thông báo lỗi
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error deleting image:", error);
+                            alert("Error deleting image. Please try again.");
+                        }
+                    });
+                    countImg();
+                }
+            });
+
+            $('#postForm').on('submit', function (e) {
+                // Tạo một đối tượng DataTransfer để cập nhật lại input file với các ảnh còn lại trong mảng
+                e.preventDefault();
+                let priceValue = $('#price').val().replace(/\./g, ''); // Loại bỏ dấu chấm
+                $('#price').val(priceValue); // Cập nhật lại giá trị vào input trước khi gửi đi
+                if ($('#exactAddress').val() != "") {
+                    $("#postForm")[0].submit();
+
+                    // Form sẽ được submit theo cách thông thường với các file còn lại
+                } else {
+                    $('#exactAddress').focus();
+                }
+            });
+        });
+        const data = {
+            hanoi: {
+                districts: {
+                    ba_dinh: ["Phường Kim Mã", "Phường Giảng Võ", "Phường Cống Vị"],
+                    hoan_kiem: ["Phường Hàng Bài", "Phường Tràng Tiền", "Phường Lý Thái Tổ"],
+                }
+            }
+        };
+
+        // Hàm chuyển đổi tên quận từ snake_case sang có dấu
+        function convertDistrictName(district) {
+            const districtNames = {
+                ba_dinh: "Ba Đình",
+                hoan_kiem: "Hoàn Kiếm",
+            };
+            return districtNames[district] || district;
+        }
+
+        // Hàm cập nhật danh sách quận/huyện dựa vào tỉnh đã chọn
+        function updateDistricts() {
+            const province = $('#province').val();
+            const districtSelect = $('#district');
+            const wardSelect = $('#ward');
+
+            // Xóa danh sách cũ
+            districtSelect.empty().append('<option value="">Chọn quận/huyện</option>');
+            wardSelect.empty().append('<option value="">Chọn phường/xã</option>');
+
+            if (province) {
+                const districts = data[province].districts;
+                $.each(districts, function (key, value) {
+                    const districtName = convertDistrictName(key);
+                    districtSelect.append(`<option value="${key}">${districtName}</option>`);
+                });
+            }
+            $('#houseNumber').val('')
+            updateSelectedInfo();
+
+        }
+
+        // Hàm cập nhật danh sách phường/xã dựa vào quận/huyện đã chọn
+        function updateWards() {
+            const province = $('#province').val();
+            const district = $('#district').val();
+            const wardSelect = $('#ward');
+
+            // Xóa danh sách phường cũ
+            wardSelect.empty().append('<option value="">Chọn phường/xã</option>');
+
+            if (province && district) {
+                const wards = data[province].districts[district];
+                $.each(wards, function (index, value) {
+                    wardSelect.append(`<option value="${value}">${value}</option>`);
+                });
+            }
+            $('#houseNumber').val('')
+            updateSelectedInfo();
+        }
+        $('#ward').on('change', function () {
+            $('#houseNumber').val('')
+            updateSelectedInfo();
+        });
+        $('#houseNumber').on('input', function () {
+            updateSelectedInfo();
+        });
+
+        function updateSelectedInfo() {
+            const province = $('#province option:selected').text();
+            const district = $('#district option:selected').text();
+            const ward = $('#ward option:selected').text();
+            const houseNumber = $('#houseNumber').val()
+            let info = ''; // Bắt đầu với tỉnh
+            if (province && province != "Chọn tỉnh/thành phố") {
+                info = province;
+                updateMap(info)
+            }
+            if (district && district !== "Chọn quận/huyện") {
+                info = `${district}, ${province}`; // Nối phường, quận và tỉnh
+                updateMap(info)
+            }
+            if (ward && ward != "Chọn phường/xã") {
+                info = `${ward}, ${district}, ${province}`;
+                updateMap(info)
+            }
+            if (houseNumber && province != "Chọn tỉnh/thành phố" && district !== "Chọn quận/huyện" && ward != "Chọn phường/xã") {
+                info = `${houseNumber}, ${ward}, ${district}, ${province}`
+                updateMap(info)
+            }
+            $('#exactAddress').val(info); // Cập nhật vào địa chỉ chính xác
+        }
+        $(document).ready(function () {
+            $('#price').on('input', function () {
+                let value = $(this).val().replace(/\D/g, ''); // Loại bỏ ký tự không phải số
+                value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Thêm dấu chấm sau mỗi 3 số
+                $(this).val(value); // Gán lại giá trị đã định dạng
+            });
+
+            // Loại bỏ dấu chấm khi form được submit
+        });
+        //load map
+        var map = L.map('map').setView([21.028511, 105.804817], 13);
+
+        // Tải lớp bản đồ từ OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Thêm một đánh dấu (marker) tại địa chỉ cụ thể
+        var marker = L.marker([21.028511, 105.804817]).addTo(map)
+            .bindPopup('Hà Nội, Việt Nam')  // Nội dung hiển thị khi nhấp vào marker
+            .openPopup();
+        var map;
+        var marker;
+        var debounceTimer;
+
+        function updateMap(address) {
+            if (address.trim() === '') {
+                return;
+            }
+
+            clearTimeout(debounceTimer);
+
+            debounceTimer = setTimeout(function () {
+                var url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+
+                $.getJSON(url, function (data) {
+                    if (data.length > 0) {
+                        var lat = data[0].lat;
+                        var lon = data[0].lon;
+
+                        if (!map) {
+                            map = L.map('map').setView([lat, lon], 15);
+
+                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            }).addTo(map);
+                        } else {
+                            map.setView([lat, lon], 15);
+                        }
+
+                        if (marker) {
+                            map.removeLayer(marker);
+                        }
+
+                        marker = L.marker([lat, lon]).addTo(map)
+                            .bindPopup(address)
+                            .openPopup();
+
+                        $('#map').show();
+                    }
+                }).fail(function () {
+                    alert('Có lỗi xảy ra trong quá trình tìm kiếm.');
+                });
+            }, 1000);
+        }
+        function countImg(){
+            var count = $('#imagePreview div').length;
+            if(count<2){
+                $('#images').attr('required', true)
+            }else{
+                $('#images').attr('required', false)
+            }
+        }
+        $(document).ready(function () {
+            $('.alert').addClass('show');
+            setTimeout(function () {
+                var alertElement = $('.alert');
+                if (alertElement.length) {
+                    alertElement.alert('close');
+                }
+            }, 3000);
+        });
+    </script>
+}
+<div class="position-relative">
+@if (TempData["error"] != null)
+    {
+        <div id="success-alert" class="alert alert-danger alert-dismissible fade" role="alert">
+            @TempData["error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <div class="row">
+        <!-- Cột trái: Thanh quản lý -->
+        <div class="col-md-3 sidebar">
+            <div class="avatar-container">
+                <img src="https://cdn.kona-blue.com/upload/kona-blue_com/post/images/2024/09/18/457/avatar-mac-dinh-1.jpg" alt="Avatar" class="avatar"> <!-- Ảnh đại diện mặc định -->
+                <h5>Tên của bạn</h5> <!-- Thay 'Tên của bạn' bằng tên thực tế -->
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item select"><a asp-controller="QuanLy" asp-action="Index">Đăng bài</a></li>
+                <li class="list-group-item"><a asp-controller="QuanLy" asp-action="PostManager">Bài viết của tôi</a></li>
+                <li class="list-group-item"><a asp-controller="QuanLy" asp-action="UserInfo">Thông tin tài khoản</a></li>
+                <li class="list-group-item"><a asp-controller="Account" asp-action="UpdatePass">Đổi mật khẩu</a></li>
+                <li class="list-group-item"><a asp-controller="Account" asp-action="Logout">Đăng xuất</a></li>
+            </ul>
+        </div>
+        <!-- Cột giữa: Thông tin đăng bài -->
+        <div class="col-md-6 middle-section mt-3 mb-5">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a asp-action="PostManager" asp-controller="QuanLy">Quản lý</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Sửa bài đăng</li>
+                </ol>
+            </nav>
+            <h1 class="text-center">Sửa bài đăng</h1>
+            <form id="postForm" method="post" asp-action="updateRoomPost" enctype="multipart/form-data">
+                <!-- Vị trí (Tỉnh, Quận, Phường) -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="province" class="form-label">Tỉnh/Thành phố</label>
+                        <select id="province" class="form-select" onchange="updateDistricts()">
+                            <option value="">Chọn tỉnh/thành phố</option>
+                            <option value="hanoi">Hà Nội</option>
+                            <!-- Thêm các tỉnh khác tại đây -->
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="district" class="form-label">Quận/Huyện</label>
+                        <select id="district" class="form-select" onchange="updateWards()">
+                            <option value="">Chọn quận/huyện</option>
+                            <!-- Thêm các quận khác tại đây -->
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="ward" class="form-label">Phường/Xã</label>
+                        <select id="ward" class="form-select">
+                            <option value="">Chọn phường/xã</option>
+                            <!-- Thêm các phường khác tại đây -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="houseNumber" class="form-label">Số nhà</label>
+                    <input type="text" class="form-control" id="houseNumber" placeholder="Nhập số nhà">
+                </div>
+                <input type="hidden" id="idRoomPost" asp-for="roomPost.IdRoomPost"/>
+                <div class="mb-3">
+                    <label asp-for="roomPost.DiaChi" class="form-label">Địa chỉ chính xác</label>
+                    <input type="text" class="form-control" value="@Model.roomPost.DiaChi" asp-for="roomPost.DiaChi" id="exactAddress" placeholder="Nhập địa chỉ chính xác" readonly required>
+                </div>
+
+                <!-- Các trường khác -->
+                <div class="mb-3">
+                    <label asp-for="roomPost.TieuDe" class="form-label">Tiêu đề</label>
+                    <input type="text" class="form-control" value="@Model.roomPost.TieuDe" asp-for="roomPost.TieuDe" id="title" placeholder="Nhập tiêu đề" required>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="roomPost.MoTa" class="form-label">Mô tả</label>
+                    <textarea class="form-control" id="description" value="@Model.roomPost.MoTa" asp-for="roomPost.MoTa" rows="4" placeholder="Nhập mô tả chi tiết" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="roomPost.DienTich" class="form-label">Diện tích (m²)</label>
+                    <input type="number" class="form-control" value="@Model.roomPost.DienTich" asp-for="roomPost.DienTich" id="area" placeholder="Nhập diện tích" required>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="roomPost.GiaTien" class="form-label">Giá thuê (VNĐ)</label>
+                    <input type="text" class="form-control" id="price" value="@Model.roomPost.GiaTien" asp-for="roomPost.GiaTien" placeholder="Nhập giá thuê" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="images" class="form-label">Hình ảnh</label>
+                    <input type="file" class="form-control" id="images" multiple accept="image/*" />
+                    <div class="row mt-2" id="imagePreview">
+                        @if (Model.imageList.Count > 0)
+                        {
+                            @foreach (var i in Model.imageList)
+                            {
+                                <div class="col-3 mb-2" data-i="@i.IdImage">
+                                    <img src="@i.HinhAnh" class="img-fluid img-thumbnail" alt="Hình ảnh">
+                                    <button type="button" class="remove-btn" data-i="@i.IdImage">Xóa</button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <!-- Thông tin liên hệ -->
+                <h3>Thông Tin Liên Hệ</h3>
+                <div class="mb-3">
+                    <label for="contactName" class="form-label">Tên liên hệ</label>
+                    <input type="text" disabled class="form-control" id="contactName" value="@Model.User.HoTen">
+                </div>
+
+                <div class="mb-3">
+                    <label for="contactPhone" class="form-label">Số điện thoại</label>
+                    <input type="tel" disabled class="form-control" id="contactPhone" value="@Model.User.Sdt" pattern="[0-9]{10}">
+                </div>
+                <button type="submit" class="btn btn-primary">Lưu</button>
+            </form>
+        </div>
+
+        <!-- Cột phải: Bản đồ -->
+        <div class="col-md-3 mt-5 mb-5">
+            <h5>Bản đồ</h5>
+            <div id="map">
+            </div>
+        </div>
+    </div>
+</div>

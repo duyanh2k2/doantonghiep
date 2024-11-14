@@ -1,0 +1,414 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Http;
+@{
+    bool isFirstElement = true;
+    bool isFirstElement1 = true;
+    int index = 0;
+    int index1 = 0;
+    var idUs = ViewContext.HttpContext.Session.GetInt32("IdUser");
+}
+@model DoAn.ViewModel.deltail;
+<link href="~/css/deltail.css" rel="stylesheet" />
+@section Scripts{
+    <script>
+        
+        $(document).ready(function () {
+            loadCommemt();
+            setTimeout(function () {
+                // Hành động sau 3 giây
+                loadUser();
+            }, 200);
+            
+            setTimeout(function () {
+                // Hành động sau 3 giây
+                loadFeedBack();
+            }, 100);
+            //Lấy địa chỉ cho breadcrumb
+            var loc = $('#location').text();
+            var parts = loc.split(", ");
+            var district = parts[parts.length - 2]
+            var ward = parts[parts.length - 3]
+            $("#district").text(district).wrapInner('<a href="/Home/Search?province=Hà+Nội&district='+district+'"></a>');
+            $("#ward").text(ward).wrapInner('<a href="/Home/Search?province=Hà+Nội&district='+district+'&ward='+ward+'"></a>');
+            var part = loc.split(":");
+            if (part.length > 0) {
+                var result = part[1].trim();
+                var map = L.map('map').setView([21.028511, 105.804817], 13);
+
+                // Tải lớp bản đồ từ OpenStreetMap
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                // Thêm một đánh dấu (marker) tại địa chỉ cụ thể
+                var marker = L.marker([21.028511, 105.804817]).addTo(map)
+                    .bindPopup('Hà Nội, Việt Nam')  // Nội dung hiển thị khi nhấp vào marker
+                    .openPopup();
+                setTimeout(function () {
+                    // Hành động sau 3 giây
+                    updateMap(result);
+                }, 100);
+                
+            }
+            // Ẩn tất cả các form phản hồi
+            $('.reply-form').hide();
+            // Gắn sự kiện cho nút phản hồi mới
+            $(document).on('click', '.reply-btn', function () {
+                const replyForm = $(this).next('.reply-form');
+                replyForm.toggle();
+                replyForm.find('.rep').focus();
+            });
+            // Xử lý sự kiện khi nhấn nút gửi bình luận
+            $('.btn-submit').on('click', function () {
+                const commentBox = $('.comment-box textarea');
+                if (commentBox.val().trim() !== '') {
+                    var c = commentBox.val().trim();
+                    var name = $('#idRoom').text();
+                    var p = name.split(":");
+                    if (p.length > 0) {
+                        var res = p[1].trim();
+                        $.ajax({
+                            url: '/Deltail/addComment',
+                            type: 'post',
+                            data: {
+                                comment: c,
+                                idRoomPost: res
+                            },
+                            success: function (data) {
+                                console.log(data)
+                                if (data.code == 200) {
+                                    loadCommemt();
+                                    setTimeout(function () {
+                                        loadUser();
+                                    }, 200);
+                                    setTimeout(function () {
+                                        loadFeedBack();
+                                    }, 100);
+                                    commentBox.val(''); // Xóa nội dung textarea sau khi gửi
+                                }else if(data.code == 500 ){
+                                    alert("Vui lòng đăng nhập");
+                                    window.location.href = "/Account/Index"
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+                             //Gắn sự kiện cho nút gửi phản hồi
+            $(document).on('click','.reply-submit', function () {
+                const replyText = $(this).siblings('textarea').val();
+                if (replyText.trim() !== '') {
+                    var id= $(this).data('idd');
+                    var f = replyText.trim();
+                    $.ajax({
+                        url: '/Deltail/addFeedBack',
+                        type: 'post',
+                        data: {
+                            feedback: f,
+                            idComment: id
+                        },
+                        success: function (data) {
+                            console.log(data)
+                            if (data.code == 200) {
+                                loadCommemt();
+                                setTimeout(function () {
+                                    loadUser();
+                                }, 200);
+                                setTimeout(function () {
+                                    loadFeedBack();
+                                }, 100);
+                                $(this).siblings('textarea').val(''); // Xóa nội dung textarea sau khi gửi
+                                $(this).parent('.reply-form').hide(); // Ẩn form phản hồi sau khi gửi
+                            } else if (data.code == 500) {
+                                alert("Vui lòng đăng nhập");
+                                window.location.href = "/Account/Index"
+                            }
+                        }
+                    });
+                }
+            });
+            $(document).on('click','.delete-btn',function () {
+                if (confirm("Bạn có chắc muốn xóa bình luận này không?")) {
+                    var id=$(this).data('idcm');
+                    var re = $(this).closest('.comment')
+                    $.ajax({
+                        url: '/Deltail/removeComment',
+                        type: 'post',
+                        data: {
+                            idComment: id
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                re.remove();
+                            }
+                        }
+                    });
+                }
+            });
+            // Xử lý sự kiện khi nhấn nút phản hồi
+            $('.reply-btn').on('click', function () {
+                const replyForm = $(this).next('.reply-form');
+                replyForm.toggle();
+            });
+            var map;
+            var marker;
+            var debounceTimer;
+            function updateMap(address) {
+                if (address.trim() === '') {
+                    return;
+                }
+
+                clearTimeout(debounceTimer);
+
+                debounceTimer = setTimeout(function () {
+                    var url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+
+                    $.getJSON(url, function (data) {
+                        if (data.length > 0) {
+                            var lat = data[0].lat;
+                            var lon = data[0].lon;
+
+                            if (!map) {
+                                map = L.map('map').setView([lat, lon], 15);
+
+                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                }).addTo(map);
+                            } else {
+                                map.setView([lat, lon], 15);
+                            }
+
+                            if (marker) {
+                                map.removeLayer(marker);
+                            }
+
+                            marker = L.marker([lat, lon]).addTo(map)
+                                .bindPopup(address)
+                                .openPopup();
+
+                            $('#map').show();
+                        }
+                    }).fail(function () {
+                        alert('Có lỗi xảy ra trong quá trình tìm kiếm.');
+                    });
+                }, 400);
+            }
+        });
+        function loadCommemt() {
+            var name = $('#idRoom').text();
+            var idU = $('#user_id').text();
+            var p = name.split(":");
+            if(p.length > 0){
+                var res = p[1].trim();
+                $.ajax({
+                    url: '/Deltail/LoadComment',
+                    Type: 'get',
+                    data: {
+                        idRoomPost:res
+                        },
+                        success: function (data) {
+                        //console.log(data)
+                        if (data.code == 200) {
+                            $('.comment-list').empty();
+                            $.each(data.c, function (k, v) {
+                                const newComment = $('<div class="comment" data-id="'+v.idComment+'" data-us="'+v.idUser+'"></div>');
+                                var htmlContent = `
+                                                <strong>Người dùng</strong>
+                                                        <p>`+ v.noiDung + `</p>
+                                                                ${v.idUser == idU ? ` <button class="btn btn-link delete-btn" data-idcm="` + v.idComment + `">Xóa</button>`:``}
+                                               
+                                                <button class="btn btn-link reply-btn">Phản hồi</button>
+
+                                                <form class="reply-form mb-2">
+                                                    <textarea class="form-control rep" rows="2" placeholder="Nhập phản hồi..."></textarea>
+                                                    <button type="button" class="btn-submit reply-submit" data-idd="`+ v.idComment + `">Gửi phản hồi</button>
+                                                </form>
+                                            `;
+                                newComment.html(htmlContent);
+                                $('.comment-list').append(newComment);
+                            });
+                        }
+                    }
+                });
+            }
+        }
+        function loadUser() {
+                $.ajax({
+                url: '/Deltail/LoadUser',
+                    type: 'get',
+                    success: function (data) {
+                        //console.log(data)
+                        if (data.code == 200) {
+                            $.each(data.u, function (k, v) {
+                            var targetComment = $('.comment[data-us="'+v.idUser+'"]');
+                            if (targetComment.length >0) 
+                            {
+                                targetComment.find('strong').text(v.hoTen);
+                            }
+                            var targetComment1 = $('.comment[data-uss="' + v.idUser + '"]');
+                            if (targetComment1.length > 0) {
+                                targetComment1.find('strong').text(v.hoTen);
+                            }
+                           });
+                        }
+                    },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', status, error);
+                    // Bạn có thể thêm mã để xử lý lỗi ở đây
+                }
+                });
+        }
+        function loadFeedBack() {
+                $.ajax({
+                    url: '/Deltail/LoadFeedBack',
+                    type: 'get',
+                    success: function (data) {
+                        if (data.code == 200) {
+                            $.each(data.f, function (k, v) {
+                            var targetComment = $('.comment[data-id="'+v.idComment+'"]');
+                            if(targetComment.length){
+                                const reply = $('<div class="comment" data-uss="' + v.idUser + '"></div>');
+                                reply.html(`
+                                                <strong>Người dùng phản hồi</strong>
+                                                <p>${v.noiDung}</p>
+                                            `);
+                                targetComment.append(reply);
+                            }
+                            });
+                        }
+                    },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', status, error);
+                    // Bạn có thể thêm mã để xử lý lỗi ở đây
+                }
+                });
+        }
+       // setInterval(loadUser,500);
+    </script>
+}
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang Chủ</a></li>
+            <li class="breadcrumb-item" id="district"></li>
+            <li class="breadcrumb-item" id="ward"></li>
+            <li class="breadcrumb-item active" aria-current="page">Chi Tiết Phòng Trọ</li>
+        </ol>
+    </nav>
+    <!-- Tiêu đề Phòng Trọ -->
+    <h1 class="text-center mb-4">@Model.post.TieuDe</h1>
+
+    <div class="row">
+        <!-- Hình ảnh Phòng Trọ -->
+        <div class="col-md-8">
+            <div id="carouselExampleIndicators" class="carousel slide mb-5" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    @foreach(var i in Model.image)
+                    {
+                        
+                        if (isFirstElement)
+                        {
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@index" class="active" aria-current="true"></button>
+                            isFirstElement = false;
+                            
+                        }
+                        else
+                        {
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@index"></button>
+                        }
+                        index++;
+                    }
+                </div>
+                <div class="carousel-inner">
+                    @foreach (var i in Model.image)
+                    {
+
+                        if (isFirstElement1)
+                        {
+                            <div class="carousel-item active">
+                                <img src="@i.HinhAnh">
+                            </div>
+                            isFirstElement1 = false;
+                        }
+                        else
+                        {
+                            <div class="carousel-item">
+                                <img src="@i.HinhAnh">
+                            </div>
+                        }
+                        index1++;
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Thông tin Liên hệ Chủ Trọ - Card Bên Phải -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Thông tin liên hệ
+                </div>
+                <div class="card-body">
+                    <p><strong>Chủ trọ:</strong> @Model.user.HoTen</p>
+                    <p><strong>Số điện thoại:</strong> @Model.user.Sdt</p>
+                    <!-- Nút liên hệ qua Zalo -->
+                    <a href="https://zalo.me/@Model.user.Sdt" class="btn btn-primary mt-3" target="_blank">
+                        Liên hệ qua Zalo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mô tả Phòng Trọ -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>Mô tả Phòng Trọ</h2>
+            <ul>
+                <li><strong>Ngày đăng:</strong> @Model.post.NgayDang.ToString("dd/MM/yyyy")</li>
+                <li id="idRoom"><strong>Mã phòng:</strong><b> @Model.post.IdRoomPost</b></li>
+                <li id="location"><strong>Vị trí:</strong> @Model.post.DiaChi</li>
+                <li><strong>Diện tích:</strong> @Model.post.DienTich m²</li>
+                <li><strong>Giá thuê:</strong> @Model.post.GiaTien VND/tháng (chưa bao gồm điện nước)</li>
+                <li>@Model.post.MoTa</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Bản đồ Địa điểm -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>Địa điểm</h2>
+            <div id="map">
+            </div>
+        </div>
+    </div>
+
+    <!-- Khu vực bình luận -->
+    <div class="comment-section">
+        <h3>Bình luận</h3>
+
+        <!-- Thêm bình luận mới -->
+        <div class="comment-box">
+            <textarea class="form-control" rows="3" placeholder="Nhập bình luận..."></textarea>
+            <button class="btn-submit">Gửi bình luận</button>
+        </div>
+
+        <div class="comment-list">
+           
+        </div>
+    </div>
+</div>
+<div id="user_id">@idUs</div>

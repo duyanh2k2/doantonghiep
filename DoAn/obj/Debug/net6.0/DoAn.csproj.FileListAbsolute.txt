@@ -1,0 +1,151 @@
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\appsettings.Development.json
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\appsettings.json
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\DoAn.staticwebassets.runtime.json
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\DoAn.exe
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\DoAn.deps.json
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\DoAn.runtimeconfig.json
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\DoAn.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\DoAn.pdb
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Humanizer.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.Data.SqlClient.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Relational.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.Extensions.Caching.Memory.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.Identity.Client.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\System.Diagnostics.DiagnosticSource.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\System.Drawing.Common.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\System.Runtime.Caching.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\System.Security.Permissions.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\System.Windows.Extensions.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\DoAn.csproj.AssemblyReference.cache
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\DoAn.GeneratedMSBuildEditorConfig.editorconfig
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\DoAn.AssemblyInfoInputs.cache
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\DoAn.AssemblyInfo.cs
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\DoAn.csproj.CoreCompileInputs.cache
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\DoAn.MvcApplicationPartsAssemblyInfo.cache
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\DoAn.RazorAssemblyInfo.cache
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\DoAn.RazorAssemblyInfo.cs
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\staticwebassets\msbuild.DoAn.Microsoft.AspNetCore.StaticWebAssets.props
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\staticwebassets\msbuild.build.DoAn.props
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\staticwebassets\msbuild.buildMultiTargeting.DoAn.props
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\staticwebassets\msbuild.buildTransitive.DoAn.props
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\staticwebassets.pack.json
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\staticwebassets.build.json
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\staticwebassets.development.json
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\scopedcss\bundle\DoAn.styles.css
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\scopedcss\projectbundle\DoAn.bundle.scp.css
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\DoAn.csproj.CopyComplete
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\DoAn.dll
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\refint\DoAn.dll
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\DoAn.pdb
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\DoAn.genruntimeconfig.cache
+E:\đồ án\DoAn\DoAn\obj\Debug\net6.0\ref\DoAn.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Microsoft.IdentityModel.Abstractions.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Newtonsoft.Json.dll
+E:\đồ án\DoAn\DoAn\bin\Debug\net6.0\Twilio.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\appsettings.Development.json
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\appsettings.json
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\DoAn.staticwebassets.runtime.json
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\NUnit3.TestAdapter.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\NUnit3.TestAdapter.pdb
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\nunit.engine.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\nunit.engine.api.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\nunit.engine.core.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\testcentric.engine.metadata.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\DoAn.exe
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\DoAn.deps.json
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\DoAn.runtimeconfig.json
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\DoAn.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\DoAn.pdb
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Humanizer.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.Data.SqlClient.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Relational.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.Extensions.Caching.Memory.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.Identity.Client.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.IdentityModel.Abstractions.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Newtonsoft.Json.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\nunit.framework.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\System.Diagnostics.DiagnosticSource.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\System.Drawing.Common.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\System.Runtime.Caching.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\System.Security.Permissions.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\System.Windows.Extensions.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\Twilio.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\DoAn.csproj.AssemblyReference.cache
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\DoAn.GeneratedMSBuildEditorConfig.editorconfig
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\DoAn.AssemblyInfoInputs.cache
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\DoAn.AssemblyInfo.cs
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\DoAn.csproj.CoreCompileInputs.cache
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\DoAn.MvcApplicationPartsAssemblyInfo.cache
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\DoAn.RazorAssemblyInfo.cache
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\DoAn.RazorAssemblyInfo.cs
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\staticwebassets\msbuild.DoAn.Microsoft.AspNetCore.StaticWebAssets.props
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\staticwebassets\msbuild.build.DoAn.props
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\staticwebassets\msbuild.buildMultiTargeting.DoAn.props
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\staticwebassets\msbuild.buildTransitive.DoAn.props
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\staticwebassets.pack.json
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\staticwebassets.build.json
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\staticwebassets.development.json
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\scopedcss\bundle\DoAn.styles.css
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\scopedcss\projectbundle\DoAn.bundle.scp.css
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\DoAn.csproj.CopyComplete
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\DoAn.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\refint\DoAn.dll
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\DoAn.pdb
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\DoAn.genruntimeconfig.cache
+E:\đồ án\đồ án tốt nghiệp\DoAn\DoAn\DoAn\obj\Debug\net6.0\ref\DoAn.dll

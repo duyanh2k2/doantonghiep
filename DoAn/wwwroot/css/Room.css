@@ -1,0 +1,108 @@
+﻿.breadcrumb {
+    background-color: #f1f1f1; /* Màu nền của Breadcrumb */
+    padding: 10px 15px; /* Khoảng cách bên trong */
+    border-radius: 8px; /* Bo tròn góc cho đẹp */
+    margin-bottom: 20px; /* Tạo khoảng cách với phần dưới */
+    border-bottom: 2px solid #ddd; /* Đường kẻ phân cách bên dưới */
+}
+.favorite-room-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .favorite-room-card img {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .favorite-room-card .card-body {
+        padding: 15px;
+    }
+
+    .favorite-room-card .price {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #f76c6c;
+    }
+
+    .favorite-room-card .btn-remove {
+        background-color: #f76c6c;
+        color: white;
+        transition: background-color 0.3s ease;
+    }
+
+        .favorite-room-card .btn-remove:hover {
+            background-color: #d9534f;
+        }
+/* Giới hạn tiêu đề và mô tả với dấu ... */
+.card-title, .card-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Giới hạn độ dài của mô tả */
+.card-text {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Số dòng muốn giới hạn */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.card {
+    transition: transform 0.2s; /* Thêm hiệu ứng chuyển động */
+}
+.card:hover {
+    transform: translateY(-5px); /* Di chuyển lên 5px khi di chuột vào */
+}
+.main-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4a90e2;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    position: relative;
+    display: block; /* Đảm bảo tiêu đề nằm giữa */
+    padding-bottom: 8px;
+}
+
+    .main-title::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 50%;
+        height: 3px;
+        background: linear-gradient(to right, #4a90e2, #f76c6c);
+        border-radius: 8px;
+    }
+.no-posts-message {
+    color: #ff0000; /* Màu chữ nổi bật */
+    font-size: 1.2em; /* Kích thước chữ lớn hơn bình thường */
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+}
+.room-item a {
+    color: inherit; /* Giữ nguyên màu của các phần tử con */
+    text-decoration: none; /* Bỏ gạch chân cho các liên kết */
+}
+#success-alert {
+    position: fixed;
+    top: 20px;
+    right: -300px; /* Bắt đầu từ ngoài màn hình bên phải */
+    z-index: 1050;
+    width: 380px; /* Độ rộng cố định */
+    transition: right 0.5s ease-in-out; /* Thời gian và hiệu ứng chuyển động */
+    display: block;
+}
+
+    #success-alert.show {
+        right: 20px; /* Kết thúc tại góc phải màn hình */
+    }

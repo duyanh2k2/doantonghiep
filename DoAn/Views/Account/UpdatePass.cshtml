@@ -1,0 +1,114 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model TblUser;
+<link href="~/css/updatepass.css" rel="stylesheet" />
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $(".toggle-password").click(function () {
+                let input = $($(this).data("target"));
+                let type = input.attr("type") === "password" ? "text" : "password";
+                input.attr("type", type);
+                $(this).toggleClass("fa-eye fa-eye-slash");
+            });
+            $("#updatePassForm").submit(function (e) {
+                e.preventDefault();
+                let isValid = true;
+                let currentPassword = $("#currentPassword").val().trim();
+                let newPassword = $("#newPassword").val().trim();
+                let confirmPassword = $("#confirmPassword").val().trim();
+                $("#form-errors").html("");
+               
+                if (!currentPassword) {
+                    $("#form-errors").html("Vui lòng nhập mật khẩu hiện tại.");
+                    $("#currentPassword").focus();
+                    isValid = false;
+                } else if (!newPassword) {
+                    $("#form-errors").html("Vui lòng nhập mật khẩu mới.");
+                    $("#newPassword").focus();
+                    isValid = false;
+                } else if (newPassword.length<8){
+                    $("#form-errors").html("Mật khẩu tối thiểu 8 ký tự");
+                    $("#newPassword").focus();
+                    isValid = false;
+                }
+                else if (currentPassword == newPassword) {
+                    $("#form-errors").html("Mật khẩu mới và mật khẩu cũ trùng nhau");
+                    $("#newPassword").focus();
+                    isValid = false;
+                }
+                else if (!confirmPassword) {
+                    $("#form-errors").html("Vui lòng xác nhận mật khẩu mới.");
+                    $("#confirmPassword").focus();
+                    isValid = false;
+                } else if (newPassword !== confirmPassword) {
+                    $("#form-errors").html("Mật khẩu mới và xác nhận mật khẩu không khớp.");
+                    $("#confirmPassword").focus();
+                    isValid = false;
+                }
+
+                // Nếu hợp lệ, thực hiện tiếp tục (ví dụ: gửi dữ liệu)
+                if (isValid) {
+                    this.submit();
+                }
+            });
+        });
+        $(document).ready(function () {
+            $('.alert').addClass('show');
+            setTimeout(function () {
+                var alertElement = $('.alert');
+                if (alertElement.length) {
+                    alertElement.alert('close');
+                }
+            }, 3000);
+        });
+    </script>
+}
+<div class="container mt-2">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Đổi mật khẩu</li>
+        </ol>
+    </nav>
+    <div class="form-container position-relative">
+        @if (TempData["Success"] != null)
+        {
+            <div id="success-alert" class="alert alert-primary alert-dismissible fade" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        else  if (TempData["Error"] != null)
+        {
+            <div id="success-alert" class="alert alert-danger alert-dismissible fade" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        <h3 class="text-center mb-4">Đổi Mật Khẩu</h3>
+        <form id="updatePassForm" asp-action="UpdatePass" method="post">
+            <input type="hidden" asp-for="IdUser" value="@ViewBag.id" />
+            <div class="mb-3 password-input-group">
+                <label for="currentPassword" class="form-label">Mật Khẩu Hiện Tại</label>
+                <input type="password" class="form-control" id="currentPassword" name="currentPassword" placeholder="Nhập mật khẩu hiện tại">
+                <i class="toggle-password fas fa-eye" data-target="#currentPassword"></i>
+            </div>
+            <div class="mb-3 password-input-group">
+                <label for="newPassword" class="form-label">Mật Khẩu Mới</label>
+                <input type="password" class="form-control" id="newPassword" asp-for="MatKhau" placeholder="Nhập mật khẩu mới">
+                <i class="toggle-password fas fa-eye" data-target="#newPassword"></i>
+            </div>
+            <div class="mb-3 password-input-group">
+                <label for="confirmPassword" class="form-label">Xác Nhận Mật Khẩu Mới</label>
+                <input type="password" class="form-control" id="confirmPassword" placeholder="Nhập lại mật khẩu mới">
+                <i class="toggle-password fas fa-eye" data-target="#confirmPassword"></i>
+            </div>
+            <span id="form-errors" class="text-danger"></span>
+            <br />
+            <button type="submit" class="btn btn-primary w-100 btn-mt">Đổi Mật Khẩu</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,140 @@
+﻿<!-- Views/Shared/_ChatBoxPartial.cshtml -->
+<div id="message-icon" style="position: fixed; bottom: 20px; right: 20px; cursor: pointer;">
+    <i class="fas fa-comments" style="font-size: 50px; color: #007bff;"></i>
+</div>
+
+<div id="chat-box" style="display: none; position: fixed; bottom: 80px; z-index:1000; right: 20px; width: 300px; border: 1px solid #ccc; background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <div id="chat-header" style="background-color: #007bff; color: white; padding: 10px; position: relative; border-radius: 10px 10px 0 0;">
+        <span id="close-chat-box" style="position: absolute; right: 10px; top: 5px; cursor: pointer; font-size: 24px; font-weight: bold; color: white;">&times;</span>
+        <h4 style="margin: 0; text-align: center;">Chat</h4>
+    </div>
+    <div id="chat-body" style="padding: 10px; height: 300px; overflow-y: scroll; display: flex; flex-direction: column-reverse;">
+        <div id="messages" style="flex: 1;">
+            <!-- Tin nhắn sẽ được thêm vào đây -->
+        </div>
+    </div>
+    <div id="chat-input-container" style="display: flex; align-items: center; padding: 10px; border-top: 1px solid #ccc;">
+        <input type="text" id="chat-input" style="flex: 1; padding: 5px;" placeholder="Nhập tin nhắn..." />
+        <i id="send-icon" class="fas fa-paper-plane" style="font-size: 24px; color: #007bff; cursor: pointer; margin-left: 10px;"></i>
+    </div>
+</div>
+<style>
+    .message {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 10px;
+        display: inline-block;
+        max-width: 80%;
+        word-wrap: break-word; /* Tự động xuống dòng khi chữ vượt quá chiều rộng */
+    }
+
+    .user-message {
+        background-color: #007bff;
+        color: white;
+        align-self: flex-start; /* Tin nhắn của người dùng ở bên trái */
+        margin-left: auto; /* Đẩy sang bên trái */
+    }
+
+    .bot-message {
+        background-color: #f1f1f1;
+        color: black;
+        align-self: flex-end; /* Tin nhắn của chatbot ở bên phải */
+        margin-right: auto; /* Đẩy sang bên phải */
+    }
+
+    .message-container {
+        display: flex; /* Sử dụng flexbox để căn chỉnh tin nhắn */
+        margin: 5px 0; /* Giữa các tin nhắn */
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        //localStorage.clear()
+        var botReply = $('<div class="message-container"><div class="message bot-message"></div></div>').find('.message').text('Xin chào anh/chị. Anh/chị cần hỗ trợ gì ạ?').end();
+        $('#messages').append(botReply);
+        $('#chat-body').scrollTop($('#chat-body')[0].scrollHeight);
+        loadMessages();
+
+        function loadMessages() {
+            //var messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            //messages.forEach(function (msg) {
+            //    var messageClass = msg.sender === 'user' ? 'user-message' : 'bot-message';
+            //    var message = $('<div class="message-container"><div class="message ' + messageClass + '"></div></div>').find('.message').text(msg.text).end();
+            //    $('#messages').append(message);
+            //});
+            var messages = JSON.parse(sessionStorage.getItem('chatMessages')) || [];
+            messages.forEach(function (msg) {
+                var messageClass = msg.sender === 'user' ? 'user-message' : 'bot-message';
+                var message = $('<div class="message-container"><div class="message ' + messageClass + '"></div></div>').find('.message').text(msg.text).end();
+                $('#messages').append(message);
+            });
+            $('#chat-body').scrollTop($('#chat-body')[0].scrollHeight);
+        }
+
+        function sendMessage() {
+            var messageText = $('#chat-input').val();
+            if (messageText.trim() !== '') {
+                // Tạo tin nhắn của người dùng
+                var message = $('<div class="message-container"><div class="message user-message"></div></div>').find('.message').text(messageText).end();
+                $('#messages').append(message);
+                message.hide().fadeIn('slow');
+                // Lưu tin nhắn vào Local Storage
+                saveMessage('user', messageText);
+                $('#chat-input').val('');
+                $('#chat-body').scrollTop($('#chat-body')[0].scrollHeight);
+
+                // Giả lập phản hồi của chatbot
+                setTimeout(function () {
+                    $.ajax({
+                        url: '/ChatBot/GetResponse',
+                        type:'post',
+                        data:{
+                            message: messageText,
+                            },
+                        contentType: 'application/json',//phải có mới chat được
+                        data: JSON.stringify(messageText),//phải có mới chat được
+                        success:function(data){
+                            console.log(data);
+                            var botReply = data.response.result;
+                            var botMessage = $('<div class="message-container"><div class="message bot-message"></div></div>').find('.message').text(botReply).end();
+                            $('#messages').append(botMessage);
+                            botMessage.hide().fadeIn('slow');
+                            // Lưu tin nhắn của chatbot vào Local Storage
+                            saveMessage('bot', botReply);
+                            $('#chat-body').scrollTop($('#chat-body')[0].scrollHeight);
+                        },
+                    });
+                }, 1000);
+            }
+        }
+
+        function saveMessage(sender, text) {
+            //var messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            //messages.push({ sender: sender, text: text });
+            //localStorage.setItem('chatMessages', JSON.stringify(messages));
+            var messages = JSON.parse(sessionStorage.getItem('chatMessages')) || [];
+            messages.push({ sender: sender, text: text });
+            sessionStorage.setItem('chatMessages', JSON.stringify(messages));
+        }
+
+        $('#message-icon').click(function () {
+            $('#chat-box').slideToggle();
+        });
+
+        $('#close-chat-box').click(function () {
+            $('#chat-box').slideUp();
+        });
+
+        $('#chat-input').keypress(function (event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        $('#send-icon').click(function () {
+            sendMessage();
+        });
+    });
+</script>

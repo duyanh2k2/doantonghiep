@@ -1,0 +1,42 @@
+﻿#form-errors {
+    position: absolute;
+    width: 100%;
+    bottom:100px; /* Căn chỉnh với vị trí của thẻ form */
+    left: 20px;
+    z-index: 10;
+}
+.password-input-group {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50px;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6c757d;
+}
+#success-alert {
+    position: fixed;
+    top: 20px;
+    right: -300px; /* Bắt đầu từ ngoài màn hình bên phải */
+    z-index: 1050;
+    width: 250px; /* Độ rộng cố định */
+    transition: right 0.5s ease-in-out; /* Thời gian và hiệu ứng chuyển động */
+    display: block;
+}
+
+    #success-alert.show,
+    #error-alert.show{
+        right: 20px; /* Kết thúc tại góc phải màn hình */
+    }
+#error-alert {
+    position: fixed;
+    top: 20px;
+    right: -300px; /* Bắt đầu từ ngoài màn hình bên phải */
+    z-index: 1050;
+    width: 350px; /* Độ rộng cố định */
+    transition: right 0.5s ease-in-out; /* Thời gian và hiệu ứng chuyển động */
+    display: block;
+}

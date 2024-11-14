@@ -1,0 +1,475 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Microsoft.AspNetCore.Http;
+@{
+    var name = ViewContext.HttpContext.Session.GetString("Name");
+}
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            loadRoomPost();
+            var currentRow; // Biến toàn cục để lưu hàng hiện tại
+            var currentColum;
+            var currentId;
+            var Idcurrent;
+            var idLess;
+            var Idadd;
+            var idUser;
+            var otp;
+            $('#searchInput').on('keyup', function () {
+                var keyword = $(this).val().toLowerCase();
+                $('#articleList tr').filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(keyword) > -1);
+                });
+            });
+            $(document).on('click', '.btn-delete', function () {
+                currentRow = $(this).closest('tr');  // Lưu lại hàng hiện tại
+                currentId = $(this).data('id'); 
+                $('#ArticleDeleteModal').modal('show');
+            });
+
+            // Xác nhận xóa phòng trọ
+            $('#ArticleDeleteButton').click(function () {
+                // Xóa hàng hiện tại khi xác nhận
+                $.ajax({
+                    url: '/QuanLy/removeRoomPost',
+                    type: 'post',
+                    data: {
+                        id: currentId
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            $(currentRow).remove();
+                            $('#ArticleDeleteModal').modal('hide');
+                            showAlert("Xóa bài viết thành công",200)
+                        }else if(data.code == 201){
+                            $('#ArticleDeleteModal').modal('hide');
+                            showAlert("Xóa bài viết thất bại", 201)
+                        }else{
+                            $('#ArticleDeleteModal').modal('hide');
+                            showAlert("Vui lòng xóa người thuê trước", 201)
+                        }
+                    }
+                });
+            });
+            let alertQueue = [];
+
+            function showAlert(message, code) {
+                const alertId = 'alert-' + new Date().getTime();
+                var $alertElement;
+                if (code == 200) {
+                    $alertElement = $('<div class="alert alert-primary alert-dismissible fade" id="' + alertId + '" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+                }
+                else
+                {
+                    $alertElement = $('<div class="alert alert-danger alert-dismissible fade" id="' + alertId + '" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+                }
+                $('#alert_manager').prepend($alertElement);
+                alertQueue.push($alertElement);
+
+                updateAlertPositions();
+
+                setTimeout(function () {
+                    $(".alert").addClass('show');
+                }, 50);
+                setTimeout(function () {
+                    var alertElement = $('#' + alertId);
+                    if (alertElement.length) {
+                        alertElement.alert('close');
+                    }
+                    alertQueue = alertQueue.filter(alert => alert[0].id !== alertId);
+                    updateAlertPositions();
+
+                    setTimeout(function () {
+                        $alertElement.remove();
+                    }, 500); // Thời gian khớp với transition của CSS
+                }, 3000);
+            }
+
+            function updateAlertPositions() {
+                alertQueue.forEach(function ($alert, index) {
+                    $alert.css('top', (20 + index * 60) + 'px');
+                });
+            }
+            $(document).on('click', '.btn-edit', function () {
+                var idEdit = $(this).data('edit');
+                window.location.href="/QuanLy/updateRoomPost?id="+idEdit;
+            });
+            // Xử lý xem chi tiết
+            $(document).on('click', '.btn-view-details', function () {
+                var id = $(this).data('id')
+                window.location.href="/Deltail/Index?id="+id;
+            });
+            $(document).on('click', '.btn-add-less', function () {
+                Idcurrent = $(this).data('less');
+            });
+            $('#mant').on('input', function () {
+                var idUs = $('#mant').val();
+                var name = $('#tenantName');
+                var phone = $('#tenantPhone');
+                $.ajax({
+                    url: '/QuanLy/loadUserLess',
+                    type: 'get',
+                    data:{
+                        idUs:idUs,
+                    },
+                    success: function (data) {
+                        if(data.code==200){
+                            name.val(data.u.hoTen);
+                            phone.val(data.u.sdt);
+                        }else{
+                            name.val('');
+                            phone.val('');
+                        }
+                    },
+                });
+            });
+            $('#btn-add').on('click', function (e) {
+                e.preventDefault();
+                var ma = $('#mant').val();
+                if(ma!="" || ma>0){
+                    $.ajax({
+                        url: '/QuanLy/addLess',
+                        type: 'post',
+                        data: {
+                            idUs: ma,
+                            idRoomPost: Idcurrent,
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                $(currentColum).find('.btn-toggle-tenant').remove();
+
+                                // Hiện nút Xóa người thuê
+                                $(currentColum).append('<button class="btn btn-sm btn-danger btn-toggle-tenant btn-remove-less" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-less="' + Idcurrent + '" title="Xóa người thuê" data-r="' + data.l.idLessee + '" data-us="' + data.l.idUser + '">Xóa người thuê</button>');
+
+                                // Ẩn modal thêm người thuê
+                                $('#addTenantModal').modal('hide');
+
+                                // Đặt lại form
+                                $('#addTenantForm')[0].reset();
+                                showAlert(data.msg,200);
+                            }else if(data.code==201){
+                                // Ẩn modal thêm người thuê
+                                $('#addTenantModal').modal('hide');
+
+                                // Đặt lại form
+                                $('#addTenantForm')[0].reset();
+                                showAlert(data.msg, 201);
+                            }else{
+                                $('#addTenantModal').modal('hide');
+                                console.log(data.msg)
+                                // Đặt lại form
+                                $('#addTenantForm')[0].reset();
+                                showAlert("Người thuê này đã có phòng", 201);
+                            }
+                        },
+
+                    });
+                }
+            });
+            var datenow
+            // Xóa người thuê
+            $(document).on('click', '.btn-toggle-tenant', function () {
+                currentRow = $(this).closest('tr');
+                currentColum = currentRow.find('td:last')
+
+            });
+            var idOtp;
+            $(document).on('click', '.btn-remove-less', function () {
+                console.log(idOtp)
+                var currentDate = new Date();
+                // Gán ngày giờ hiện tại vào biến
+                var cuDate = parseDate(datenow)
+                idUser = $(this).data('us')
+                if(currentDate>cuDate || cuDate==null || idOtp!=idUser || idOtp==undefined){
+                $.ajax({
+                    url: '/QuanLy/sendOtp',
+                    type: 'get',
+                    data:{
+                        id:idUser
+                    },
+                    success: function (data) {
+                        if(data.code == 200){
+                            showAlert(data.msg,200);
+                            datenow=data.time
+                            idOtp=data.id
+                            console.log(data)
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+                }
+                idLess = $(this).data('r');
+                Idadd = $(this).data('less');
+                
+                var name = $('#name');
+                var phone = $('#phone');
+                $.ajax({
+                    url: '/QuanLy/loadUserLess',
+                    type: 'get',
+                    data: {
+                        idUs: idUser,
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            name.val(data.u.hoTen);
+                            phone.val(data.u.sdt);
+                        } else {
+                            name.val('');
+                            phone.val('');
+                        }
+                    },
+                });
+            });
+            // Xác nhận xóa người thuê
+            $('#confirmDeleteButton').on('click', function (e) {
+                e.preventDefault();
+                var ma = $('#maxn').val();
+                if (ma != "" ) {
+                    $.ajax({
+                        url: '/QuanLy/removeLess',
+                        type: 'post',
+                        data: {
+                            idLess:idLess,
+                            otp:ma
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                $(currentColum).find('.btn-toggle-tenant').remove(); // Xóa nút xóa
+
+                                // Thêm lại nút Thêm người thuê
+                                $(currentColum).append(`<button class="btn btn-sm btn-success btn-toggle-tenant btn-add-less" data-bs-toggle="modal" data-bs-target="#addTenantModal" title="Thêm người thuê" data-less="`+ Idadd + `">
+                                                        Thêm người thuê
+                                                        </button>
+                                                        `);
+                                $('#confirmDeleteModal').modal('hide');
+                                $('#removeTenantForm')[0].reset();
+                                showAlert(data.msg, 200);
+                            } else {
+                                // Ẩn modal thêm người thuê
+                                $('#confirmDeleteModal').modal('hide');
+                                $('#removeTenantForm')[0].reset();
+                                showAlert(data.msg, 201);
+                            }
+                        },
+
+                    });
+                }
+            });
+        });
+        function loadRoomPost(){
+            $.ajax({
+                url: '/QuanLy/loadRoomPost',
+                type: 'get',
+                success: function (data) {
+                    //console.log(data)
+                    $('#articleList').empty();
+                    if (data.code == 200) {
+                        $.each(data.r, function (k, v) {
+                            var i=v.idRoomPost;
+                            let pt = '<tr>';
+                            pt += '<td data-id="'+v.idRoomPost+'">'+v.idRoomPost+'</td>';
+                            pt += '<td>'+v.tieuDe+'</td>';
+                            pt += '<td>'+v.moTa+'</td>';
+                            pt += '<td><button class="btn btn-sm btn-warning btn-edit" data-edit="'+v.idRoomPost+'">Chỉnh sửa</button><button class="btn btn-sm btn-danger btn-delete" data-id="'+v.idRoomPost+'">Xóa</button></td>';
+                            pt += '<td><button class="btn btn-sm btn-secondary btn-view-details" data-id="'+v.idRoomPost+'">Xem chi tiết</button></td>';
+                            setTimeout(function () {
+                                $.ajax({
+                                url: '/QuanLy/loadLess',
+                                type: 'get',
+                                data: {
+                                    id:i,
+                                },
+                                success: function(data){ 
+                                    if(data.code == 200){
+                                            pt += '<td><button class="btn btn-sm btn-danger btn-toggle-tenant btn-remove-less" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-less="'+v.idRoomPost+'" title="Xóa người thuê" data-r="' + data.l.idLessee + '" data-us="'+data.l.idUser+'">Xóa người thuê</button></td>';
+                                    }
+                                    else if(data.code==201){
+                                            pt += '<td><button class="btn btn-sm btn-success btn-toggle-tenant btn-add-less" data-bs-toggle="modal" data-bs-target="#addTenantModal" data-less="' + v.idRoomPost + '">Thêm người thuê</button></td>';
+                                    }else {
+                                        alert(data.msg);
+                                    }
+                                    pt += '</tr>';
+                                    $('#articleList').append(pt)
+                                }
+                            });
+                            }, 200);  
+                        });
+                    }
+                }
+            });
+        }
+        function parseDate(dateString) {
+            if (!dateString) {
+                return null; // Trả về null nếu chuỗi rỗng hoặc không xác định
+            }
+            var parts = dateString.split(" ");
+            var dateParts = parts[0].split("/");
+            var timeParts = parts[1].split(":");
+
+            // Tạo đối tượng Date với năm, tháng, ngày, giờ, phút, giây
+            return new Date(
+                dateParts[2],          // Năm
+                dateParts[1] - 1,      // Tháng (bắt đầu từ 0, nên trừ đi 1)
+                dateParts[0],          // Ngày
+                timeParts[0],          // Giờ
+                timeParts[1],          // Phút
+                timeParts[2]           // Giây
+            );
+        }
+        $(document).ready(function () {
+            $('#success-alert').addClass('show');
+            setTimeout(function () {
+                var alertElement = $('.alert');
+                if (alertElement.length) {
+                    alertElement.alert('close');
+                }
+            }, 3000);
+        });
+    </script>
+}
+<link href="~/css/qlpost.css" rel="stylesheet" />
+<div class="position-relative" id="alert_manager">
+    @if (TempData["success"] != null)
+    {
+        <div id="success-alert" class="alert alert-primary alert-dismissible fade" role="alert">
+            @TempData["success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <div class="row">
+        <!-- Phần bên trái (3 cột) -->
+        <div class="col-md-3 sidebar">
+            <div class="avatar-container">
+                <img src="https://cdn.kona-blue.com/upload/kona-blue_com/post/images/2024/09/18/457/avatar-mac-dinh-1.jpg" alt="Avatar" class="avatar"> <!-- Ảnh đại diện mặc định -->
+                <h5>@name</h5> <!-- Thay 'Tên của bạn' bằng tên thực tế -->
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item"><a asp-controller="QuanLy" asp-action="Index"><i class="fas fa-plus"></i> Đăng bài</a></li>
+                <li class="list-group-item select"><a asp-controller="QuanLy" asp-action="PostManager"><i class="fas fa-home"></i>  Bài viết của tôi</a></li>
+                <li class="list-group-item"><a asp-controller="BaoCao" asp-action="Index"><i class="bi bi-clipboard2-check-fill"></i> Báo cáo thống kê</a></li>
+                <li class="list-group-item"><a asp-controller="QuanLy" asp-action="UserInfo"><i class="fas fa-user"></i> Thông tin tài khoản</a></li>
+                <li class="list-group-item"><a asp-controller="Account" asp-action="UpdatePass"><i class="fas fa-key"></i> Đổi mật khẩu</a></li>
+                <li class="list-group-item"><a asp-controller="Account" asp-action="Logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
+            </ul>
+        </div>
+
+        <!-- Phần bên phải (9 cột) -->
+        <div class="col-md-9 mt-3 mb-5">
+            <!-- Header -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a asp-action="PostManager" asp-controller="QuanLy">Quản lý</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Bài viết phòng trọ</li>
+                </ol>
+            </nav>
+            <header class="mb-4 text-center">
+                <h1>Bài đăng phòng trọ của tôi</h1>
+            </header>
+            <div class="mb-3">
+                <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm bài đăng phòng trọ...">
+            </div>
+            <!-- Table: List of Articles -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Mã số</th>
+                            <th>Tiêu đề</th>
+                            <th>Mô tả</th>
+                            <th>Hành động</th>
+                            <th>Xem chi tiết</th>
+                            <th>Người thuê</th>
+                        </tr>
+                    </thead>
+                    <tbody id="articleList">
+                        <!-- Dữ liệu mẫu -->
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="addTenantModal" tabindex="-1" aria-labelledby="addTenantModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTenantModalLabel">Thêm người thuê</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addTenantForm">
+                    <div class="mb-3">
+                        <label for="mant" class="form-label">Mã người thuê</label>
+                        <input type="text" class="form-control" id="mant" placeholder="Vui lòng nhập mã người thuê để tìm kiếm" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tenantName" class="form-label">Tên người thuê</label>
+                        <input type="text" disabled class="form-control" id="tenantName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="tenantPhone" class="form-label">Số điện thoại</label>
+                        <input type="tel" disabled  class="form-control" id="tenantPhone">
+                    </div>
+                    <button type="button" class="btn btn-primary" id="btn-add">Lưu người thuê</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal: Confirm Delete Tenant -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xóa người thuê</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Nhập mã xác nhận gồm 6 số được gửi về số điện thoại người thuê
+                <form id="removeTenantForm">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Tên người thuê</label>
+                        <input type="text" disabled class="form-control" id="name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Số điện thoại</label>
+                        <input type="tel" disabled class="form-control" id="phone">
+                    </div>
+                    <div class="mb-3">
+                        <label for="maxn" class="form-label">Mã xác nhận</label>
+                        <input type="text" class="form-control" id="maxn" placeholder="Vui lòng nhập mã xác nhận" required>
+                    </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">Xóa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal: Confirm Delete Article -->
+<div class="modal fade" id="ArticleDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có muốn xóa phòng trọ này không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="ArticleDeleteButton">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,62 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    var name = ViewContext.HttpContext.Session.GetString("Name");
+    //var role = ViewContext.HttpContext.Session.GetInt32("Role");
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="~/css/admin/adminmenu.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="sidebar">
+        <h3 class="text-center">Admin Panel</h3>
+        <ul class="list-unstyled">
+            <li><a asp-action="Index" asp-controller="AdminUser"><i class="fas fa-users"></i> Tài khoản</a></li>
+            <li><a asp-action="Index" asp-controller="AdminRoomPost"><i class="fas fa-home"></i> Bài đăng phòng trọ</a></li>
+            <li><a asp-action="Index" asp-controller="Support"><i class="fas fa-question"></i> Hỗ trợ</a></li>
+            @*<li><a href="/admin/settings"><i class="fas fa-comments"></i> Bình luận</a></li>*@
+        </ul>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content ">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+            <div class="container-fluid">
+               @* <a class="navbar-brand" href="#">Admin</a>*@
+
+                <!-- Đẩy Logout sang bên phải -->
+                <div class="ms-auto d-flex align-items-center">
+                    <!-- Tên người dùng (optional) -->
+                    <span class="text-white me-3">Xin chào, @name</span>
+
+                    <!-- Nút Logout -->
+                    <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-light">
+                        <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        <div class="container">
+            @RenderBody() <!-- Here the page-specific content will be rendered -->
+        </div>
+    </div>
+    <div class="divider"></div> <!-- Đường kẻ ngăn cách -->
+    <footer class="footer">
+        <p>&copy; 2024 Admin Panel. All rights reserved.</p>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,157 @@
+﻿.search-section {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+h3.text-center {
+    font-family: 'Poppins', sans-serif;
+    color: #007bff;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    position: relative;
+}
+
+    h3.text-center:after {
+        content: "";
+        position: absolute;
+        width: 80px;
+        height: 4px;
+        background-color: #007bff;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
+/* CSS cho slider 2 đầu */
+.slider-container {
+    position: relative;
+    width: 100%;
+}
+
+.slider-range {
+    width: 100%;
+    position: relative;
+    height: 5px;
+    background: #ddd; /* Màu nền của thanh trượt */
+    border-radius: 5px;
+}
+
+.slider-range input {
+    position: absolute;
+    width: 100%;
+   -webkit-appearance: none;
+    background: transparent;
+    pointer-events: none;
+}
+.slider-range input::-webkit-slider-thumb {
+    pointer-events: all;
+    width: 18px;
+    height: 18px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+.slider-range input::-moz-range-thumb {
+    pointer-events: all;
+    width: 18px;
+    height: 18px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+/* Màu sắc khoảng đã chọn */
+.selected-range {
+    position: absolute;
+    height: 5px;
+    background: rgba(0, 123, 255, 0.7); /* Màu xanh đậm cho khoảng đã chọn */
+    border-radius: 5px;
+    top: 0;
+    left: 0;
+    z-index: 1; /* Đặt nó phía trên thanh trượt */
+}
+
+.range-values {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+.card {
+    transition: transform 0.2s; /* Thêm hiệu ứng chuyển động */
+    position: relative; /* Để định vị trái tim */
+    overflow: hidden; /* Ẩn nội dung thừa */
+    display: flex; /* Sử dụng Flexbox */
+    flex-direction: column; /* Để sắp xếp theo chiều dọc */
+}
+
+.card:hover {
+        transform: translateY(-5px); /* Di chuyển lên 5px khi di chuột vào */
+}
+
+.card-body {
+    display: flex; /* Sử dụng Flexbox cho card-body */
+    flex-direction: column; /* Sắp xếp theo chiều dọc */
+    justify-content: space-between; /* Để giãn cách giữa nội dung và biểu tượng */
+    padding: 15px; /* Padding */
+    flex-grow: 1; /* Để cho phần nội dung mở rộng tối đa */
+}
+.card-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden; /* Ẩn nội dung thừa */
+    text-overflow: ellipsis; /* Hiển thị ... khi văn bản vượt quá */
+}
+.card-text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; /* Giới hạn số dòng hiển thị */
+    overflow: hidden; /* Ẩn nội dung thừa */
+    text-overflow: ellipsis; /* Hiển thị ... khi văn bản vượt quá */
+}
+
+.card-img-top {
+    width: 100%; /* Chiều rộng cố định */
+    height: 200px; /* Chiều cao cố định */
+    object-fit: cover; /* Đảm bảo hình ảnh được cắt vừa kích thước mà không bị biến dạng */
+}
+
+.heart-icon {
+    align-self: flex-end; /* Đặt biểu tượng trái tim ở bên phải */
+    color: #5656e7; /* Màu cho biểu tượng trái tim */
+    font-size: 24px; /* Kích thước của biểu tượng */
+    margin-top: 10px; /* Khoảng cách với nội dung bên trên */
+}
+.heart-icon:hover {
+   color: red; /* Màu sắc mới cho biểu tượng khi hover */
+}
+a {
+    color: inherit; /* Giữ nguyên màu của các phần tử con */
+    text-decoration: none; /* Bỏ gạch chân cho các liên kết */
+}
+#dataDiv {
+    color: red;
+    font-style: italic;
+    font-size:24px;
+    text-align: center;
+    padding: 20px;
+}
+.alert {
+    position: fixed;
+    top: 20px;
+    right: -300px; /* Bắt đầu từ ngoài màn hình bên phải */
+    z-index: 1050;
+    width: 300px; /* Độ rộng cố định */
+    transition: right 0.5s ease-in-out, top 0.5s ease-in-out;/* Thời gian và hiệu ứng chuyển động */
+    display: block;
+}
+
+.alert.show {
+    right: 20px; /* Kết thúc tại góc phải màn hình */
+}

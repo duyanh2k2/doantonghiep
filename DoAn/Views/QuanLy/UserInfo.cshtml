@@ -1,0 +1,96 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model TblUser;
+@{
+    var isMale = Model.Gt;
+    var selectedGender = isMale ? "true" : "false";
+}
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            // Lấy giá trị từ Razor
+            var isMale = @isMale.ToString().ToLower();
+            // Thiết lập giá trị cho select
+            $('#gender').val()=isMale
+            //document.getElementById("gender").value = isMale;
+        });
+        $(document).ready(function () {
+            $('.alert').addClass('show');
+            setTimeout(function () {
+                var alertElement = $('.alert');
+                if (alertElement.length) {
+                    alertElement.alert('close');
+                }
+            }, 3000);
+        });
+    </script>
+}
+<link href="~/css/userinfo.css" rel="stylesheet" />
+<div class="container mt-2 position-relative">
+    @if (TempData["success"] != null)
+    {
+        <div id="success-alert" class="alert alert-primary alert-dismissible fade" role="alert">
+            @TempData["success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else if (TempData["error"] != null)
+    {
+        <div id="success-alert" class="alert alert-danger alert-dismissible fade" role="alert">
+            @TempData["error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Thông tin cá nhân</li>
+        </ol>
+    </nav>
+    <div class="container custom-container mt-5 mb-5">
+        <div class="custom-title">Thông Tin Tài Khoản</div>
+        <form method="post" asp-action="UpdetInfo">
+            <!-- Mã tài khoản -->
+            <div class="mb-3">
+                <label for="idUser" class="custom-form-label">Mã người dùng</label>
+                <input type="text" disabled class="custom-input" id="username" value="@Model.IdUser" required>
+            </div>
+            <!-- Tài khoản -->
+            <div class="mb-3">
+                <label for="username" class="custom-form-label">Tài khoản</label>
+                <input type="text" disabled class="custom-input" id="username" asp-for="@Model.TaiKhoan" value="@Model.TaiKhoan" placeholder="Nhập tài khoản của bạn" required>
+            </div>
+
+            <!-- Số điện thoại -->
+            <div class="mb-3">
+                <label for="phone" class="custom-form-label">Số điện thoại</label>
+                <input type="tel" class="custom-input" id="phone" asp-for="@Model.Sdt" value="@Model.Sdt" placeholder="Nhập số điện thoại" required>
+            </div>
+
+            <!-- Họ tên -->
+            <div class="mb-3">
+                <label for="fullname" class="custom-form-label">Họ tên</label>
+                <input type="text" class="custom-input" id="fullname" asp-for="@Model.HoTen" value="@Model.HoTen" placeholder="Nhập họ tên của bạn" required>
+            </div>
+
+            <!-- Giới tính -->
+            <div class="mb-3">
+                <label for="gender" class="custom-form-label">Giới tính</label>
+                <select class="custom-select" asp-for="@Model.Gt" id="gender" required>
+                    <option value="true">Nam</option>
+                    <option value="false">Nữ</option>
+                </select>
+            </div>
+
+            <!-- Căn cước -->
+            <div class="mb-3">
+                <label for="id_card" class="custom-form-label">Căn cước</label>
+                <input type="text" class="custom-input" id="id_card" asp-for="@Model.CanCuoc" value="@Model.CanCuoc" placeholder="Nhập số căn cước" required>
+            </div>
+
+            <!-- Nút Lưu -->
+            <button type="submit" class="custom-btn">Lưu thông tin</button>
+        </form>
+    </div>
+</div>

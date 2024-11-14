@@ -1,0 +1,53 @@
+﻿html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+.sidebar {
+    background-color: #343a40;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    padding-top: 20px;
+}
+
+    .sidebar a {
+        color: white;
+        padding: 10px 15px;
+        text-decoration: none;
+        display: block;
+    }
+
+        .sidebar a:hover {
+            background-color: #575d63;
+        }
+
+.main-content {
+    margin-left: 250px;
+    flex: 1;
+}
+
+.navbar {
+    background-color: #007bff;
+}
+
+    .navbar a {
+        color: white;
+    }
+.divider {
+    border-top: 2px solid #ccc; /* Đường kẻ ngăn cách */
+    margin: 1px 0; /* Khoảng cách trên và dưới */
+}
+
+.footer {
+    background-color: #343a40;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+    margin-top: auto; /* Đảm bảo footer luôn ở dưới cùng */
+}
+

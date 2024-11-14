@@ -1,0 +1,186 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@model TblRoomPost
+<div class="container mt-4 mb-4 position-relative">
+    <h2>Thêm Bài Viết Mới</h2>
+    <form asp-action="Create" method="post" enctype="multipart/form-data" id="createForm">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <label for="TieuDe">Tiêu Đề</label>
+            <input type="text" asp-for="TieuDe" class="form-control" />
+            <span asp-validation-for="TieuDe" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="MoTa">Mô Tả</label>
+            <textarea asp-for="MoTa" class="form-control"></textarea>
+            <span asp-validation-for="MoTa" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="GiaTien">Giá Tiền</label>
+            <input type="number" asp-for="GiaTien" class="form-control" />
+            <span asp-validation-for="GiaTien" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="DienTich">Diện Tích</label>
+            <input type="number" asp-for="DienTich" class="form-control" />
+            <span asp-validation-for="DienTich" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="IdUser">Người Dùng</label>
+            <select asp-for="IdUser" class="form-control" asp-items="ViewBag.Users"></select>
+        </div>
+
+        <div class="form-group">
+            <label for="DiaChi">Địa Chỉ</label>
+            <input type="text" asp-for="DiaChi" class="form-control" />
+            <span asp-validation-for="DiaChi" class="text-danger"></span>
+        </div>
+
+        <!-- Chọn nhiều ảnh và hiển thị bản xem trước -->
+        <div class="form-group">
+            <label for="HinhAnhs">Hình Ảnh</label>
+            <input type="file" name="image" multiple class="form-control" id="imageUpload" />
+        </div>
+
+        <!-- Vùng hiển thị bản xem trước ảnh -->
+        <div id="previewImages" class="mt-3 row"></div>
+
+        <button type="submit" class="btn btn-primary mt-3">Thêm Bài Viết</button>
+        <a asp-action="Index" class="btn btn-secondary mt-3">Quay Lại</a>
+    </form>
+</div>
+
+@section Scripts {
+
+        <script>
+        $(document).ready(function () {
+            let selectedFiles = []; // Mảng để lưu các file đã chọn
+            let deletedFiles = [];  // Mảng để lưu các file đã bị xóa
+
+            // Khi người dùng chọn ảnh mới
+            $('#imageUpload').on('change', function () {
+                // Lấy các file đã chọn
+                const files = this.files;
+
+                // Cập nhật mảng selectedFiles với các file mới
+                selectedFiles = [...selectedFiles, ...files];
+
+                // Cập nhật lại vùng xem trước ảnh
+                updatePreviewImages();
+            });
+
+            // Cập nhật lại vùng xem trước ảnh
+            function updatePreviewImages() {
+                $('#previewImages').empty(); // Xóa ảnh cũ trong preview
+
+                // Lặp qua các file đã chọn và hiển thị ảnh
+                $.each(selectedFiles, function (index, file) {
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        // Tạo thẻ img để hiển thị ảnh
+                        const imgContainer = $('<div>').addClass('col-2 position-relative mb-3');
+                        const img = $('<img>').attr('src', e.target.result).addClass('img-thumbnail');
+
+                        // Tạo nút xóa bằng icon dấu "X"
+                        const deleteBtn = $('<button>').addClass('btn btn-danger position-absolute top-0')
+                            .css('right', '5px')  // Dịch icon dấu X vào bên phải một chút
+                            .css('top', '5px')    // Dịch icon dấu X lên một chút
+                            .html('<i class="fas fa-times"></i>') // Thêm icon dấu X
+                            .on('click', function () {
+                                // Thêm file vào mảng deletedFiles
+                                deletedFiles.push(selectedFiles[index]);
+
+                                // Xóa ảnh khỏi mảng selectedFiles
+                                selectedFiles = selectedFiles.filter((f, i) => i !== index);
+
+                                // Cập nhật lại vùng xem trước ảnh và input file
+                                updatePreviewImages();
+                                updateInputFiles();
+                            });
+
+                        // Thêm ảnh và nút xóa vào vùng xem trước
+                        imgContainer.append(img).append(deleteBtn);
+                        $('#previewImages').append(imgContainer);
+                    };
+
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // Cập nhật lại giá trị thẻ input để loại bỏ các file đã xóa
+            function updateInputFiles() {
+                // Tạo đối tượng FileList mới với các file còn lại
+                const fileInput = $('#imageUpload')[0];
+                const newFileList = new DataTransfer();
+
+                // Thêm các file chưa bị xóa vào DataTransfer
+                selectedFiles.forEach(file => {
+                    newFileList.items.add(file);
+                });
+
+                // Cập nhật giá trị của input file
+                fileInput.files = newFileList.files;
+            }
+            $('#createForm').on('submit', function (e) {
+                let isValid = true;
+
+                // Kiểm tra các input
+                if ($('#TieuDe').val().trim() === "") {
+                    alert("Tiêu đề không được để trống.");
+                    $('#TieuDe').focus();  // Focus vào trường Tiêu Đề
+                    isValid = false;
+                }
+
+                else if ($('#MoTa').val().trim() === "") {
+                    alert("Mô tả không được để trống.");
+                    $('#MoTa').focus();  // Focus vào trường Mô Tả
+                    isValid = false;
+                }
+                else if ($('#GiaTien').val().trim() === "") {
+                    alert("Giá tiền không được để trống.");
+                    $('#GiaTien').focus();  // Focus vào trường Giá Tiền
+                    isValid = false;
+                }
+
+                else if ($('#DienTich').val().trim() === "") {
+                    alert("Diện tích không được để trống.");
+                    $('#DienTich').focus();  // Focus vào trường Diện Tích
+                    isValid = false;
+                }
+
+                else if ($('#DiaChi').val().trim() === "") {
+                    alert("Địa chỉ không được để trống.");
+                    $('#DiaChi').focus();  // Focus vào trường Địa Chỉ
+                    isValid = false;
+                }
+
+                else if ($('#IdUser').val() === null) {
+                    alert("Vui lòng chọn người dùng.");
+                    $('#IdUser').focus();  // Focus vào trường Người Dùng
+                    isValid = false;
+                }
+
+                else if ($('#imageUpload')[0].files.length === 0) {
+                    alert("Vui lòng chọn ít nhất một hình ảnh.");
+                    $('#imageUpload').focus();  // Focus vào trường Hình Ảnh
+                    isValid = false;
+                }
+
+                // Nếu có trường nào rỗng, hủy submit form
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

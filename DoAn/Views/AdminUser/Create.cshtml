@@ -1,0 +1,139 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@model TblUser
+<link href="~/css/admin/alert.css" rel="stylesheet" />
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('.alert').addClass('show');
+            setTimeout(function () {
+                var alertElement = $('.alert');
+                if (alertElement.length) {
+                    alertElement.alert('close');
+                }
+            }, 3000);
+            $("#submitBtn").on("click", function (e) {
+                e.preventDefault();
+                let isValid = true;
+                let errorMessage = "";
+                // Kiểm tra Tài Khoản
+                if ($("#TaiKhoan").val().trim() === "") {
+                    errorMessage = "Tài Khoản không được để trống.";
+                    $("#TaiKhoan").focus();
+                    isValid = false;
+                }
+                // Kiểm tra Mật Khẩu
+                else if ($("#MatKhau").val().length < 8) {
+                    errorMessage = "Mật Khẩu phải có ít nhất 8 ký tự.";
+                    $("#MatKhau").focus();
+                    isValid = false;
+                }
+                // Kiểm tra Số Điện Thoại
+                else if (!/^[0-9]{10}$/.test($("#Sdt").val())) {
+                    errorMessage = "Số Điện Thoại phải đúng định dạng (10 chữ số).";
+                    $("#Sdt").focus();
+                    isValid = false;
+                }
+                // Kiểm tra Họ Tên
+                else if ($("#HoTen").val().trim() === "") {
+                    errorMessage = "Họ Tên không được để trống.";
+                    $("#HoTen").focus();
+                    isValid = false;
+                }
+                // Kiểm tra Căn Cước
+                else if (!/^[0-9]+$/.test($("#CanCuoc").val())) {
+                    errorMessage = "Căn Cước phải là số.";
+                    $("#CanCuoc").focus();
+                    isValid = false;
+                }
+                else if (!$("input[name='Gt']:checked").val()) {
+                    errorMessage = "Giới Tính không được để trống.";
+                    $("input[name='Gt']").first().focus();
+                    isValid = false;
+                }
+                // Kiểm tra Vai Trò
+                else if ($("#IdRole").val() === "") {
+                    errorMessage = "Vai Trò không được để trống.";
+                    $("#IdRole").focus();
+                    isValid = false;
+                }
+
+                // Nếu có lỗi, hiển thị alert và focus vào input đó
+                if (!isValid) {
+                    alert(errorMessage);
+                } else {
+                    $("#userForm")[0].submit();
+                }
+            });
+        });
+    </script>
+}
+<div class="container mt-4 mb-4 position-relative">
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div id="success-alert" class="alert alert-danger alert-dismissible fade" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <h2>Thêm Người Dùng</h2>
+    <form method="post" asp-action="Create" id="userForm">
+        <!-- Tài Khoản -->
+        <div class="mb-3">
+            <label asp-for="TaiKhoan" class="form-label">Tài Khoản</label>
+            <input asp-for="TaiKhoan" class="form-control" />
+        </div>
+
+        <!-- Mật Khẩu -->
+        <div class="mb-3">
+            <label asp-for="MatKhau" class="form-label">Mật Khẩu</label>
+            <input asp-for="MatKhau" type="password" class="form-control" />
+        </div>
+
+        <!-- Số Điện Thoại -->
+        <div class="mb-3">
+            <label asp-for="Sdt" class="form-label">Số Điện Thoại</label>
+            <input asp-for="Sdt" class="form-control" />
+        </div>
+
+        <!-- Họ Tên -->
+        <div class="mb-3">
+            <label asp-for="HoTen" class="form-label">Họ Tên</label>
+            <input asp-for="HoTen" class="form-control" />
+        </div>
+
+        <!-- Giới Tính -->
+        <div class="mb-3">
+            <label asp-for="Gt" class="form-label">Giới Tính</label>
+            <div class="form-check">
+                <input asp-for="Gt" class="form-check-input" type="radio" value="true" id="GtMale" />
+                <label class="form-check-label" for="GtMale">Nam</label>
+            </div>
+            <div class="form-check">
+                <input asp-for="Gt" class="form-check-input" type="radio" value="false" id="GtFemale" />
+                <label class="form-check-label" for="GtFemale">Nữ</label>
+            </div>
+        </div>
+
+        <!-- Căn Cước -->
+        <div class="mb-3">
+            <label asp-for="CanCuoc" class="form-label">Căn Cước</label>
+            <input asp-for="CanCuoc" class="form-control" />
+        </div>
+
+        <!-- Vai Trò -->
+        <div class="mb-3">
+            <label asp-for="IdRole" class="form-label">Vai Trò</label>
+            <select asp-for="IdRole" asp-items="ViewBag.Roles" class="form-control"></select>
+            
+        </div>
+
+        <!-- Nút Lưu -->
+        <button type="submit" class="btn btn-primary" id="submitBtn">Lưu</button>
+        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>

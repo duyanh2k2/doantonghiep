@@ -1,0 +1,102 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<link href="~/css/otp.css" rel="stylesheet" />
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            // Khi người dùng nhập xong 1 số, tự động di chuyển đến ô tiếp theo
+            $('.otp-input').on('input', function () {
+                if (this.value.length === this.maxLength) {
+                    $(this).next('.otp-input').focus();
+                }
+            });
+            $('.otp-input').on('keydown', function (e) {
+                if (e.key === "Backspace" && this.value === "") {
+                    $(this).prev('.otp-input').focus();  // Di chuyển đến ô trước đó
+                }
+            });
+            $('.otp-input').on('paste', function (e) {
+                e.preventDefault();  // Ngăn chặn hành động dán mặc định
+
+                // Lấy dữ liệu đã dán
+                let pasteData = (e.originalEvent || e).clipboardData.getData('text');
+
+                // Chỉ xử lý nếu chuỗi dán có đúng 6 ký tự
+                if (pasteData.length === 6 && /^\d+$/.test(pasteData)) {  // Kiểm tra xem có phải là chuỗi số
+                    // Điền các ký tự vào các ô input
+                    $('.otp-input').each(function (index) {
+                        $(this).val(pasteData[index]);
+                    });
+
+                    // Di chuyển focus đến ô cuối cùng
+                    $('.otp-input').last().focus();
+                }
+            });
+            // Xử lý sự kiện submit của form
+            $('#otp-form').on('submit', function (e) {
+                e.preventDefault();  // Ngăn chặn form gửi đi mặc định
+
+                // Lấy tất cả các giá trị của các ô nhập
+                let otpCode = '';
+                $('.otp-input').each(function () {
+                    otpCode += $(this).val();  // Gộp từng giá trị thành một chuỗi
+                });
+
+                // Kiểm tra xem có đủ 6 số không
+                if (otpCode.length === 6) {
+                    $('#key_code').val(otpCode);
+                    $('#otp-form')[0].submit();
+                } else {
+                    alert('Vui lòng nhập mã OTP đầy đủ gồm 6 chữ số.');
+                }
+            });
+        });
+        $(document).ready(function () {
+            $('.alert').addClass('show');
+            setTimeout(function () {
+                var alertElement = $('.alert');
+                if (alertElement.length) {
+                    alertElement.alert('close');
+                }
+            }, 3000);
+        });
+    </script>
+}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 position-relative">
+            @if (TempData["error"] != null)
+            {
+                <div id="success-alert" class="alert alert-danger alert-dismissible fade" role="alert">
+                    @TempData["error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            <div class="card mt-5 mb-5">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Xác minh tài khoản</h5>
+                    <p class="card-text">Vui lòng nhập mã xác minh gồm 6 số được gửi về số điện thoại</p>
+                    <form id="otp-form" method="post" asp-action="Otp">
+                        <div class="d-flex justify-content-center mb-4">
+                            <input type="text" class="form-control otp-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" required>
+                            <input type="text" class="form-control otp-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" required>
+                            <input type="text" class="form-control otp-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" required>
+                            <input type="text" class="form-control otp-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" required>
+                            <input type="text" class="form-control otp-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" required>
+                            <input type="text" class="form-control otp-input" maxlength="1" pattern="[0-9]*" inputmode="numeric" required>
+                            <input type="hidden" id="key_code" name="otpcode"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Xác nhận</button>
+                    </form>
+                    <div class="mt-3">
+                        <p>Bạn chưa nhận được mã? <a asp-action="SendOtp">Gửi lại</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

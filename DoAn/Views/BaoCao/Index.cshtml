@@ -1,0 +1,142 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IEnumerable<TblLessee>
+<link href="~/css/qlpost.css" rel="stylesheet" />
+<div class="position-relative" id="alert_manager">
+    @if (TempData["success"] != null)
+    {
+        <div id="success-alert" class="alert alert-primary alert-dismissible fade" role="alert">
+            @TempData["success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <div class="row">
+        <!-- Phần bên trái (3 cột) -->
+        <div class="col-md-3 sidebar">
+            <div class="avatar-container">
+                <img src="https://cdn.kona-blue.com/upload/kona-blue_com/post/images/2024/09/18/457/avatar-mac-dinh-1.jpg" alt="Avatar" class="avatar"> <!-- Ảnh đại diện mặc định -->
+                <h5></h5> <!-- Thay 'Tên của bạn' bằng tên thực tế -->
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item"><a asp-controller="QuanLy" asp-action="Index"><i class="fas fa-plus"></i> Đăng bài</a></li>
+                <li class="list-group-item"><a asp-controller="QuanLy" asp-action="PostManager"><i class="fas fa-home"></i>  Bài viết của tôi</a></li>
+                <li class="list-group-item select"><a asp-controller="BaoCao" asp-action="Index"><i class="bi bi-clipboard2-check-fill"></i> Báo cáo thống kê</a></li>
+                <li class="list-group-item"><a asp-controller="QuanLy" asp-action="UserInfo"><i class="fas fa-user"></i> Thông tin tài khoản</a></li>
+                <li class="list-group-item"><a asp-controller="Account" asp-action="UpdatePass"><i class="fas fa-key"></i> Đổi mật khẩu</a></li>
+                <li class="list-group-item"><a asp-controller="Account" asp-action="Logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
+            </ul>
+        </div>
+
+        <!-- Phần bên phải (9 cột) -->
+        <div class="col-md-9 mt-3 mb-5">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a asp-action="PostManager" asp-controller="QuanLy">Quản lý</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Báo cáo</li>
+                </ol>
+            </nav>
+            <!-- Header -->
+            <div class="container mt-4">
+                <h2 class="text-center mb-4">Báo cáo thống kê về Phòng Trọ và Người Thuê</h2>
+
+                <!-- Thông tin thống kê phòng trọ -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card border-primary">
+                            <div class="card-header bg-primary text-white">Thống Kê Phòng Trọ</div>
+                            <div class="card-body">
+                                <p>Tổng số phòng: <span id="totalRooms">@ViewBag.RoomStats.TotalRooms</span></p>
+                                <p>Phòng đã cho thuê: <span id="rentedRooms">@ViewBag.RoomStats.RentedRooms</span></p>
+                                <p>Phòng còn trống: <span id="availableRooms">@ViewBag.RoomStats.AvailableRooms</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-info">
+                            <div class="card-header bg-info text-white">Thống Kê Người Thuê</div>
+                            <div class="card-body">
+                                <p>Tổng số người thuê: <span id="totalLessees">@ViewBag.LesseeStats.TotalLessees</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Biểu đồ thống kê (có thể thêm chart.js hoặc thư viện khác) -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <canvas id="roomLesseeChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+
+                <!-- Bảng danh sách người thuê -->
+                <div class="row">
+                    <div class="col-12">
+                        <h4 class="text-center mt-4">Danh Sách Người Thuê</h4>
+                        <table class="table table-bordered mt-2">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tên</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Mã Phòng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var lessee in Model)
+                                {
+                                    <tr>
+                                        <td>@lessee.IdUserNavigation.HoTen</td>
+                                        <td>@lessee.IdUserNavigation.Sdt</td>
+                                        <td>@lessee.IdRoomPostNavigation.IdRoomPost</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- jQuery và Chart.js để vẽ biểu đồ -->
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Vẽ biểu đồ
+            const ctx = document.getElementById('roomLesseeChart').getContext('2d');
+            const roomLesseeChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Tổng số phòng', 'Phòng đã cho thuê', 'Phòng còn trống', 'Tổng số người thuê'],
+                    datasets: [{
+                        label: 'Thống Kê',
+                        data: [
+                            $('#totalRooms').text(),
+                            $('#rentedRooms').text(),
+                            $('#availableRooms').text(),
+                            $('#totalLessees').text()
+                        ],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(153, 102, 255, 0.6)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'Biểu đồ Thống Kê Phòng Trọ và Người Thuê' }
+                    }
+                }
+            });
+        });
+    </script>
+}

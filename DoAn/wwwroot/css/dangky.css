@@ -1,0 +1,19 @@
+﻿#form-errors {
+    position: absolute;
+    width: 100%;
+    bottom:100px; /* Căn chỉnh với vị trí của thẻ form */
+    left: 20px;
+    z-index: 10;
+}
+.password-input-group {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 44px;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6c757d;
+}

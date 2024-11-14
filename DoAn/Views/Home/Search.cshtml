@@ -1,0 +1,273 @@
+﻿@model DoAn.ViewModel.Home;
+<link href="~/css/home.css" rel="stylesheet" />
+@section Scripts{
+    <script>
+        function updateSlider(minRangeSelector, maxRangeSelector, minValueSelector, maxValueSelector, unit, selectedRangeId) {
+            let minValue = parseInt($(minRangeSelector).val());
+            let maxValue = parseInt($(maxRangeSelector).val());
+
+            // Kiểm tra nếu giá trị min vượt quá max
+            if (minValue > maxValue) {
+                $(minRangeSelector).val(maxValue);
+                minValue = maxValue;
+            }
+
+            // Cập nhật giá trị hiển thị
+            $(minValueSelector).text(minValue.toLocaleString() + unit);
+            $(maxValueSelector).text(maxValue.toLocaleString() + unit);
+
+            // Cập nhật màu sắc khoảng đã chọn
+            const percentageMin = (minValue - parseInt($(minRangeSelector).attr('min'))) / (parseInt($(maxRangeSelector).attr('max')) - parseInt($(minRangeSelector).attr('min'))) * 100;
+            const percentageMax = (maxValue - parseInt($(minRangeSelector).attr('min'))) / (parseInt($(maxRangeSelector).attr('max')) - parseInt($(minRangeSelector).attr('min'))) * 100;
+
+            // Cập nhật chiều rộng của khoảng đã chọn
+            const selectedRange = $(selectedRangeId);
+            selectedRange.css({
+                left: percentageMin + '%',
+                width: (percentageMax - percentageMin) + '%'
+            });
+        }
+
+        $(document).ready(function () {
+            // Xử lý slider cho diện tích
+            $('#minAreaRange, #maxAreaRange').on('input', function () {
+                updateSlider('#minAreaRange', '#maxAreaRange', '#minAreaValue', '#maxAreaValue', ' m²', '#selectedAreaRange');
+            });
+
+            $('#confirmArea').on('click', function () {
+                const minArea = $('#minAreaRange').val();
+                const maxArea = $('#maxAreaRange').val();
+                $('#area').val(`${minArea} m² - ${maxArea} m²`);
+                $('#fromDienTich').val(minArea);
+                $('#toDienTich').val(maxArea);
+                $('#areaModal').modal('hide');
+            });
+
+            // Xử lý slider cho giá tiền
+            $('#minPriceRange, #maxPriceRange').on('input', function () {
+                updateSlider('#minPriceRange', '#maxPriceRange', '#minPriceValue', '#maxPriceValue', ' VND', '#selectedPriceRange');
+            });
+
+            $('#confirmPrice').on('click', function () {
+                const minPrice = $('#minPriceRange').val();
+                const maxPrice = $('#maxPriceRange').val();
+                $('#price').val(`${Number(minPrice).toLocaleString()} VND - ${Number(maxPrice).toLocaleString()} VND`);
+
+                // Cập nhật giá trị cho input ẩn
+                $('#fromGia').val(minPrice);
+                $('#toGia').val(maxPrice);
+
+                $('#priceModal').modal('hide');
+            });
+
+        });
+        const data = {
+            "Hà Nội": {
+                "Ba Đình": ["Phường Kim Mã", "Phường Giảng Võ", "Phường Cống Vị"],
+                "Hoàn Kiếm": ["Phường Hàng Bài", "Phường Tràng Tiền", "Phường Lý Thái Tổ"],
+                "Hoàng Mai": ["Phường Định Công", "Phường Hoàng Văn Thụ"],
+            },
+        };
+
+        // Hàm chuyển đổi tên quận từ snake_case sang có dấu
+        //function convertDistrictName(district) {
+        //    const districtNames = {
+        //        ba_dinh: "Ba Đình",
+        //        hoan_kiem: "Hoàn Kiếm",
+        //        hoang_mai: "Hoàng Mai",
+
+        //    };
+        //    return districtNames[district] || district;
+        //}
+
+        // Hàm cập nhật danh sách quận/huyện dựa vào tỉnh đã chọn
+        function updateDistricts() {
+            const province = $('#province').val();
+            const districtSelect = $('#district');
+            const wardSelect = $('#ward');
+
+            // Xóa danh sách cũ
+            districtSelect.empty().append('<option value="">Chọn quận/huyện</option>');
+            wardSelect.empty().append('<option value="">Chọn phường/xã</option>');
+
+            if (province) {
+                const districts = Object.keys(data[province] || {});
+                districts.forEach(district => {
+                    districtSelect.append(`<option value="${district}">${district}</option>`);
+                });
+            }
+        }
+
+        // Hàm cập nhật danh sách phường/xã dựa vào quận/huyện đã chọn
+        function updateWards() {
+            const province = $('#province').val();
+            const district = $('#district').val();
+            const wardSelect = $('#ward');
+
+            // Xóa danh sách phường cũ
+            wardSelect.empty().append('<option value="">Chọn phường/xã</option>');
+
+            if (province && district) {
+                const wards = data[province][district] || [];
+                wards.forEach(ward => {
+                    wardSelect.append(`<option value="${ward}">${ward}</option>`);
+                });
+            }
+        }
+
+    </script>
+}
+<div class="container mt-3">
+    <div class="search-section">
+        <h3 class="text-center">Tìm Phòng Trọ Nhanh Chóng</h3>
+        <form id="searchForm" method="get" asp-controller="Home" asp-action="Search">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="province" class="form-label">Tỉnh/Thành Phố</label>
+                    <select id="province" name="province" class="form-select" onchange="updateDistricts()">
+                        <option value="">Chọn tỉnh/thành phố</option>
+                        <option value="Hà Nội">Hà Nội</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="district" class="form-label">Quận/Huyện</label>
+                    <select id="district" name="district" class="form-select" onchange="updateWards()">
+                        <option value="">Chọn quận/huyện</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="ward" class="form-label">Phường/Xã</label>
+                    <select id="ward" name="ward" class="form-select">
+                        <option value="">Chọn phường/xã</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <label for="area" class="form-label">Diện Tích (m²)</label>
+                    <input type="text" id="area" class="form-control" placeholder="Chọn khoảng diện tích" readonly data-bs-toggle="modal" data-bs-target="#areaModal">
+                </div>
+                <!-- Input ẩn cho diện tích -->
+                <input type="hidden" id="fromDienTich" name="fromDienTich">
+                <input type="hidden" id="toDienTich" name="toDienTich">
+                <div class="col-md-6">
+                    <label for="price" class="form-label">Giá (VND)</label>
+                    <input type="text" id="price" class="form-control" placeholder="Chọn khoảng giá" readonly data-bs-toggle="modal" data-bs-target="#priceModal">
+                </div>
+            </div>
+            <!-- Input ẩn cho giá -->
+            <input type="hidden" id="fromGia" name="fromGia">
+            <input type="hidden" id="toGia" name="toGia">
+
+            <div class="row g-3 mt-4">
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal để chọn khoảng diện tích -->
+<div class="modal fade" id="areaModal" tabindex="-1" aria-labelledby="areaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="areaModalLabel">Chọn khoảng diện tích</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="rangeArea">Chọn diện tích:</label>
+                <div class="slider-container">
+                    <div class="slider-range">
+                        <input type="range" id="minAreaRange" min="10" max="200" value="10">
+                        <input type="range" id="maxAreaRange" min="10" max="200" value="200">
+                        <div class="selected-range" id="selectedAreaRange"></div>
+                    </div>
+                </div>
+                <div class="range-values">
+                    <span id="minAreaValue">10 m²</span>
+                    <span id="maxAreaValue">200 m²</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="confirmArea">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal để chọn khoảng giá -->
+<div class="modal fade" id="priceModal" tabindex="-1" aria-labelledby="priceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="priceModalLabel">Chọn khoảng giá</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="rangePrice">Chọn giá (VND):</label>
+                <div class="slider-container">
+                    <div class="slider-range">
+                        <input type="range" id="minPriceRange" min="1000000" max="50000000" value="1000000" step="100000">
+                        <input type="range" id="maxPriceRange" min="1000000" max="50000000" value="50000000" step="100000">
+                        <div class="selected-range" id="selectedPriceRange"></div>
+                    </div>
+                </div>
+                <div class="range-values">
+                    <span id="minPriceValue">1.000.000 VND</span>
+                    <span id="maxPriceValue">50.000.000 VND</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="confirmPrice">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="rooms" class="container my-4">
+    @if(ViewBag.message == "Phòng trọ")
+    {
+        <h2>Danh Sách Phòng Trọ</h2>
+    }
+    else
+    {
+        <h2>@ViewBag.message</h2>
+    }
+    <div class="row">
+        @if(Model.roomPost.Count>0)
+        {
+            @foreach (var post in Model.roomPost)
+            {
+                <div class="col-md-3 col-sm-12 mb-4">
+                    <a asp-controller="Deltail" asp-action="Index" asp-route-id="@post.IdRoomPost" class="card">
+                        @foreach (var img in Model.image)
+                        {
+                            if (post.IdRoomPost == img.IdRoomPost)
+                            {
+                                <img src="@img.HinhAnh" class="card-img-top" alt="Phòng Trọ A">
+                                break;
+                            }
+                        }
+                        <div class="card-body">
+                            <h3 class="card-title">@post.TieuDe</h3>
+                            <p class="card-text">Giá: @post.GiaTien VND/Tháng. @post.MoTa</p>
+                            <i class="bi bi-heart-fill heart-icon" data-id="@post.IdRoomPost"></i> <!-- Biểu tượng trái tim -->
+                        </div>
+                    </a>
+                </div>
+            }
+        }else
+        {
+            <div id="dataDiv" class="p-5 text-center">
+                Không có dữ liệu đáp ứng yêu cầu của bạn
+            </div>
+        }
+
+    </div>
+</div>

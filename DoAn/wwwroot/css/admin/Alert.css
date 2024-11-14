@@ -1,0 +1,14 @@
+﻿#success-alert {
+    position: fixed;
+    top: 20px;
+    right: -300px; /* Bắt đầu từ ngoài màn hình bên phải */
+    z-index: 1050;
+    /*width: 250px; *//* Độ rộng cố định */
+    display:inline-block;
+    transition: right 0.5s ease-in-out, top 0.5s ease-in-out; /* Thời gian và hiệu ứng chuyển động */
+    /*display: block;*/
+}
+
+    #success-alert.show {
+        right: 20px; /* Kết thúc tại góc phải màn hình */
+    }

@@ -1,0 +1,165 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model TblUser;
+<link href="~/css/dangky.css" rel="stylesheet" />
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#registrationForm").submit(function (event) {
+                // Ngăn chặn form gửi đi
+                event.preventDefault();
+
+                // Xóa thông báo lỗi trước đó
+                $(".text-danger").html("");
+                $("#form-errors").html(""); // Xóa lỗi chung
+
+                // Lấy giá trị từ form
+                var username = $("#username").val().trim();
+                var password = $("#password").val().trim();
+                var phone = $("#phone").val().trim();
+                var fullname = $("#fullname").val().trim();
+                var gender = $("#gender").val();
+                var idNumber = $("#idNumber").val().trim();
+                var role = $("#role").val();
+
+                // Kiểm tra các điều kiện
+                var isValid = true;
+                var phonePattern = /(0|\+84)[3-9]{1}[0-9]{8}/;
+                if (username === "") {
+                    $("#form-errors").html("Tài khoản không được để trống.");
+                    $("#username").focus(); // Focus vào trường lỗi
+                    isValid = false;
+                } else if (password === "") {
+                    $("#form-errors").html("Mật khẩu không được để trống.");
+                    $("#password").focus(); // Focus vào trường lỗi
+                    isValid = false;
+
+                }else if(password.length<8)
+                {
+                    $("#form-errors").html("Mật khẩu tối thiểu 8 ký tự");
+                    $("#password").focus(); // Focus vào trường lỗi
+                    isValid = false;
+                }
+                else if (phone === "") {
+                    $("#form-errors").html("Số điện thoại không được để trống.");
+                    $("#phone").focus(); // Focus vào trường lỗi
+                    isValid = false;
+                } else if (!phonePattern.test(phone)) {
+                    $("#form-errors").html("Số điện thoại không hợp lệ.");
+                    $("#phone").focus(); // Focus vào trường lỗi
+                    isValid = false;
+                } else if (fullname === "") {
+                    $("#form-errors").html("Họ và tên không được để trống.");
+                    $("#fullname").focus(); // Focus vào trường lỗi
+                    isValid = false;
+                } else if (gender === null) {
+                    $("#form-errors").html("Vui lòng chọn giới tính.");
+                    $("#gender").focus(); // Focus vào trường lỗi
+                    isValid = false;
+                } else if (idNumber === "") {
+                    $("#form-errors").html("Số căn cước công dân không được để trống.");
+                    $("#idNumber").focus(); // Focus vào trường lỗi
+                    isValid = false;
+                } else if (role === null) {
+                    $("#form-errors").html("Vui lòng chọn quyền người thuê hay người cho thuê.");
+                    $("#role").focus(); // Focus vào trường lỗi
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    $("#registrationForm")[0].submit(); // nếu muốn submit form
+                }
+
+            });
+            $(".toggle-password").click(function () {
+                let input = $($(this).data("target"));
+                let type = input.attr("type") === "password" ? "text" : "password";
+                input.attr("type", type);
+                $(this).toggleClass("fa-eye fa-eye-slash");
+            });
+        });
+    </script>
+}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Thẻ card -->
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3>Đăng Ký Tài Khoản</h3>
+                </div>
+                <div class="card-body">
+                    <form id="registrationForm" asp-controller="Account" asp-action="DangKy">
+                        <!-- Tài khoản -->
+                        <div class="form-group mb-3">
+                            <label for="username">Tài khoản</label>
+                            <input type="text" class="form-control" asp-for="TaiKhoan" id="username" placeholder="Nhập tài khoản" />
+                            <div id="username-error" class="text-danger"></div> <!-- Hiển thị lỗi -->
+                        </div>
+
+                        <!-- Mật khẩu -->
+                        <div class="form-group mb-3 password-input-group">
+                            <label for="password">Mật khẩu</label>
+                            <input type="password" class="form-control" asp-for="MatKhau" id="password" placeholder="Nhập mật khẩu" />
+                            <i class="toggle-password fas fa-eye" data-target="#password"></i>
+                            <div id="password-error" class="text-danger"></div> <!-- Hiển thị lỗi -->
+                        </div>
+                        <!-- Số điện thoại -->
+                        <div class="form-group mb-3">
+                            <label for="phone">Số điện thoại</label>
+                            <input type="tel" class="form-control" asp-for="Sdt" id="phone" placeholder="Nhập số điện thoại">
+                            <div id="phone-error" class="text-danger"></div> <!-- Hiển thị lỗi -->
+                        </div>
+
+                        <!-- Họ và tên -->
+                        <div class="form-group mb-3">
+                            <label for="fullname">Họ và tên</label>
+                            <input type="text" class="form-control" asp-for="HoTen" id="fullname" placeholder="Nhập họ và tên" />
+                            <div id="fullname-error" class="text-danger"></div> <!-- Hiển thị lỗi -->
+                        </div>
+
+                        <!-- Giới tính -->
+                        <div class="form-group mb-3">
+                            <label for="gender">Giới tính</label>
+                            <select class="form-control" asp-for="Gt" id="gender">
+                                <option disabled selected>Chọn giới tính</option>
+                                <option value="true">Nam</option>
+                                <option value="false">Nữ</option>
+                            </select>
+                            <div id="gender-error" class="text-danger"></div> <!-- Hiển thị lỗi -->
+                        </div>
+
+                        <!-- Số căn cước công dân -->
+                        <div class="form-group mb-3">
+                            <label for="idNumber">Số căn cước công dân</label>
+                            <input type="text" class="form-control" asp-for="CanCuoc" id="idNumber" placeholder="Nhập số căn cước công dân">
+                            <div id="idNumber-error" class="text-danger"></div> <!-- Hiển thị lỗi -->
+                        </div>
+
+                        <!-- Quyền: Người thuê hay Người cho thuê -->
+                        <div class="form-group mb-3">
+                            <label for="role">Quyền</label>
+                            <select class="form-control" asp-for="IdRole" id="role">
+                                <option value="0" disabled selected>Chọn quyền</option>
+                                <option value="1">Người thuê</option>
+                                <option value="2">Người cho thuê</option>
+                            </select>
+                            <div id="role-error" class="text-danger"></div> <!-- Hiển thị lỗi -->
+                        </div>
+                        <div id="form-errors" class="text-danger mb-3">@ViewBag.message</div> <!-- Hiển thị lỗi chung -->
+                        <!-- Nút Đăng ký -->
+                        <br />
+                        <button type="submit" class="btn btn-primary w-100">Đăng Ký</button>
+                    </form>
+    
+                    <div class="text-center mt-3">
+                        <p>Bạn đã có tài khoản? <a asp-action="Index" class="text-primary">Đăng nhập</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
